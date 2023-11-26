@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "587728103989",
+    "firebase_url": "https://timer-aeo-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "timer-aeo",
+    "storage_bucket": "timer-aeo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587728103989:android:48ebb359471f9a59fd5f7c",
+        "android_client_info": {
+          "package_name": "com.example.timer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUYz2902bmy4pPmO4RQm56zaoTgtbKxzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
