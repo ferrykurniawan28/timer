@@ -22,6 +22,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Timer AEO 2024',
       theme: ThemeData.dark(),
       // home: const MainScreenMobile(),
       initialRoute: '/',
