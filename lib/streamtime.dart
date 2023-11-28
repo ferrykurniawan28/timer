@@ -24,6 +24,7 @@ class _StreamTimeState extends State<StreamTime> {
   Duration? _timeDifference;
   late bool isTimerRunning;
   int queue = 0;
+  Timer? timer;
 
   @override
   void initState() {
@@ -63,6 +64,24 @@ class _StreamTimeState extends State<StreamTime> {
     });
   }
 
+  void _stopTimer() async {
+    timer?.cancel();
+    isTimerRunning = false;
+    _futureDateTime = DateTime.now();
+    _timeDifference = _futureDateTime.difference(DateTime.now());
+    // try {
+    //   await _dataRef.child(widget.field).child(widget.room).update({
+    //     'timestamp': _futureDateTime.millisecondsSinceEpoch,
+    //     'isRunning': false
+    //   });
+    // } catch (error) {
+    //   // print(error);
+    // } finally {
+    //   // print('Done writing to database');
+    // }
+    setState(() {});
+  }
+
   void _calculateTimeDifference() async {
     // futureTime = DateTime.fromMillisecondsSinceEpoch(future);
     DateTime currentDateTime = DateTime.now();
@@ -71,10 +90,16 @@ class _StreamTimeState extends State<StreamTime> {
     if (_timeDifference!.isNegative) {
       // _timeDifference = const Duration(minutes: -2);
       if (_timeDifference!.inMinutes.abs() > 2) {
-        // _stopTimer();
+        _stopTimer();
         return;
       }
     }
+
+    // if (!isTimerRunning) {
+    //   setState(() {
+    //     _timeDifference = null;
+    //   });
+    // }
     // If the future date is in the past, stop the timer
     // if (_timeDifference! <= Duration.zero) {
     //   // timer?.cancel();

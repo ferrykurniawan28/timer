@@ -175,7 +175,7 @@ class _TimeState extends State<Time> {
       // _timeDifference = const Duration(minutes: -2);
       if (_timeDifference!.inMinutes.abs() > 2) {
         _stopTimer();
-        return;
+        // return;
       }
     }
     // If the future date is in the past, stop the timer

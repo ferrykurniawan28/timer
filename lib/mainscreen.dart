@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:timer/jam.dart';
 import 'package:timer/streamtime.dart';
 // import 'package:flutter/widgets.dart';
 
@@ -203,8 +204,12 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(
-              height: 10,
+            SizedBox(
+              height: 150,
+              child: Jam(
+                sizeDate: (isDesktop(context)) ? 40 : 30,
+                sizeHour: (isDesktop(context)) ? 35 : 25,
+              ),
             ),
             StaggeredGrid.count(
               crossAxisCount: (isDesktop(context)) ? 4 : 2,

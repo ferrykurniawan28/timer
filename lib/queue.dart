@@ -48,6 +48,9 @@ class _QueNumberState extends State<QueNumber> {
   }
 
   void decrement() async {
+    if (queue <= 0) {
+      return;
+    }
     setState(() {
       queue--;
     });
