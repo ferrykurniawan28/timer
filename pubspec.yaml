@@ -7,6 +7,9 @@ environment:
   sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
+  assets_audio_player: ^3.1.1
+  audioplayers: ^5.2.1
+  audioplayers_web: ^4.1.0
   cloud_firestore: ^4.13.2
   dynamic_color: ^1.6.8
   firebase_core: ^2.23.0
@@ -28,3 +31,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/
+
+  # - assets/sound/sm64_coin.mp3
+  # - assets/sound/assets/sound/sm64_coin.mp3

@@ -205,7 +205,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
         child: Column(
           children: [
             SizedBox(
-              height: 150,
+              height: (isDesktop(context)) ? 150 : 100,
               child: Jam(
                 sizeDate: (isDesktop(context)) ? 40 : 30,
                 sizeHour: (isDesktop(context)) ? 35 : 25,

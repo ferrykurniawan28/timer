@@ -3,6 +3,8 @@ import 'dart:async';
 // import 'dart:ffi';
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -41,12 +43,18 @@ class _TimeState extends State<Time> {
   bool isTimerRunning = false;
   dynamic future;
   int _selectedValue = 0;
+  final player = AudioPlayer();
+  bool _isMounted = false; // final assetsAudioPlayer = AssetsAudioPlayer();
+  // AudioCache audioCache = AudioCache();
 
   @override
   void initState() {
     super.initState();
+    _isMounted = true;
 
-    // _selectedValue = 3;
+    if (widget.field == 'Debate') {
+      _selectedValue = 7;
+    }
 
     _dataRef.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value;
@@ -102,7 +110,15 @@ class _TimeState extends State<Time> {
     );
   }
 
+  Future<void> playUrl(String url) async {
+    await player.play(UrlSource(url));
+  }
+
   void _startTimer() async {
+    // player.play(
+    //   AssetSource('sm64_coin.mp3'),
+    // );
+    // playUrl('https://audio.jukehost.co.uk/bgX4iEoqWr5yhS1cFTMmMagQXN7f2K7N');
     if (_selectedValue == 0) {
       showError(
         'Please select a time!',
@@ -163,7 +179,11 @@ class _TimeState extends State<Time> {
     } finally {
       // print('Done writing to database');
     }
-    setState(() {});
+
+    if (_isMounted) {
+      setState(() {});
+    }
+    // setState(() {});
   }
 
   void _calculateTimeDifference() async {
@@ -178,19 +198,55 @@ class _TimeState extends State<Time> {
         // return;
       }
     }
-    // If the future date is in the past, stop the timer
-    // if (_timeDifference! <= Duration.zero) {
-    //   // timer?.cancel();
-    //   // _timeDifference = Duration.zero;
-    //   // _stopTimer();
-    //   // isTimerRunning = false;
-    // }
 
-    setState(() {});
+    if (widget.field == 'Debate') {
+      switch (_timeDifference!.inMinutes) {
+        case 6:
+          if (_timeDifference!.inSeconds.remainder(60) == 0) {
+            playUrl(
+                'https://audio.jukehost.co.uk/bgX4iEoqWr5yhS1cFTMmMagQXN7f2K7N');
+            // assetsAudioPlayer.open(Audio("sm64_coin.mp3"), autoStart: true);
+            // AudioPlayer player = await audioCache.fixedPlayer('sm64_blue_coin.mp3');
+          }
+
+          break;
+        case 1:
+          if (_timeDifference!.inSeconds.remainder(60) == 0) {
+            playUrl(
+                'https://audio.jukehost.co.uk/bgX4iEoqWr5yhS1cFTMmMagQXN7f2K7N');
+            // assetsAudioPlayer.open(Audio("sm64_coin.mp3"), autoStart: true);
+          }
+          break;
+        case 0:
+          if (_timeDifference!.inSeconds == 0) {
+            // assetsAudioPlayer.open(Audio("sm64_coin.mp3"), autoStart: true);
+            playUrl(
+                'https://audio.jukehost.co.uk/rKoErLE85r2ll4Pi8IfMhQMhGvSIJ4UE');
+            // AssetsAudioPlayer.open(
+            //   Audio("sm64_coin.mp3"),
+            //   autoStart: true,
+            //   // showNotification: true,
+            // );
+          }
+          break;
+      }
+      if (_timeDifference!.isNegative) {
+        if (_timeDifference!.inSeconds.abs() > 20) {
+          playUrl(
+              'https://audio.jukehost.co.uk/rKoErLE85r2ll4Pi8IfMhQMhGvSIJ4UE');
+        }
+      }
+    }
+
+    if (_isMounted) {
+      setState(() {});
+    }
+    // setState(() {});
   }
 
   @override
   void dispose() {
+    _isMounted = false;
     timer?.cancel();
     super.dispose();
   }
@@ -231,62 +287,69 @@ class _TimeState extends State<Time> {
                       : Colors.red,
                   lineWidth: 10,
                   percent: progress,
-                  center: CupertinoButton(
-                    // color: Colors.blue,
-                    child: Text(
-                      count,
-                      style:
-                          GoogleFonts.lato(color: Colors.white, fontSize: 25),
-                    ),
-                    onPressed: () => showCupertinoModalPopup(
-                      context: context,
-                      builder: (_) => SizedBox(
-                        height: 250,
-                        child: CupertinoPicker(
-                          scrollController: FixedExtentScrollController(
-                            initialItem: 0,
+                  center: (widget.field != 'Debate')
+                      ? CupertinoButton(
+                          // color: Colors.blue,
+                          child: Text(
+                            count,
+                            style: GoogleFonts.lato(
+                                color: Colors.white, fontSize: 25),
                           ),
-                          itemExtent: 30,
-                          onSelectedItemChanged: (int value) {
-                            final Map<int, int> time = {
-                              0: 0,
-                              1: 2,
-                              2: 3,
-                              3: 5,
-                              4: 6,
-                              5: 7,
-                              6: 8,
-                              7: 10,
-                              8: 12,
-                              9: 15,
-                              10: 30,
-                            };
-                            setState(() {
-                              _selectedValue = time[value]!;
-                            });
-                          },
-                          children: const [
-                            Text('00:00'),
-                            Text('02:00'),
-                            Text('03:00'),
-                            Text('05:00'),
-                            Text('06:00'),
-                            Text('07:00'),
-                            Text('08:00'),
-                            Text('10:00'),
-                            Text('12:00'),
-                            Text('15:00'),
-                            Text('30:00'),
-                          ],
+                          onPressed: () => showCupertinoModalPopup(
+                            context: context,
+                            builder: (_) => SizedBox(
+                              height: 250,
+                              child: CupertinoPicker(
+                                scrollController: FixedExtentScrollController(
+                                  initialItem: 0,
+                                ),
+                                itemExtent: 30,
+                                onSelectedItemChanged: (int value) {
+                                  final Map<int, int> time = {
+                                    0: 0,
+                                    1: 2,
+                                    2: 3,
+                                    3: 5,
+                                    4: 6,
+                                    5: 7,
+                                    6: 8,
+                                    7: 10,
+                                    8: 12,
+                                    9: 15,
+                                    10: 30,
+                                  };
+                                  setState(() {
+                                    _selectedValue = time[value]!;
+                                  });
+                                },
+                                children: const [
+                                  Text('00:00'),
+                                  Text('02:00'),
+                                  Text('03:00'),
+                                  Text('05:00'),
+                                  Text('06:00'),
+                                  Text('07:00'),
+                                  Text('08:00'),
+                                  Text('10:00'),
+                                  Text('12:00'),
+                                  Text('15:00'),
+                                  Text('30:00'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      : Text(
+                          count,
+                          style: GoogleFonts.lato(
+                              color: Colors.white, fontSize: 25),
                         ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
               const SizedBox(
                 height: 30,
               ),
+              // Text(_timeDifference.toString()),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

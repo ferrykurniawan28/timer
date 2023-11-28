@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 
 class Jam extends StatefulWidget {
   const Jam({this.sizeDate, this.sizeHour, super.key});
-  final sizeDate;
-  final sizeHour;
+  final double? sizeDate;
+  final double? sizeHour;
 
   @override
   State<Jam> createState() => _JamState();
