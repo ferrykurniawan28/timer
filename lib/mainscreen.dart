@@ -88,7 +88,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                         style: GoogleFonts.lato(),
                       ),
                       onTap: () {
-                        Navigator.pushNamed(context, '/speech_prep_1');
+                        Navigator.popAndPushNamed(context, '/speech_prep_1');
                       },
                     ),
                     ListTile(
@@ -97,7 +97,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                         style: GoogleFonts.lato(),
                       ),
                       onTap: () {
-                        Navigator.pushNamed(context, '/speech_prep_2');
+                        Navigator.popAndPushNamed(context, '/speech_prep_2');
                       },
                     ),
                     ListTile(
@@ -106,7 +106,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                         style: GoogleFonts.lato(),
                       ),
                       onTap: () {
-                        Navigator.pushNamed(context, '/speech_perform');
+                        Navigator.popAndPushNamed(context, '/speech_perform');
                       },
                     )
                   ]),
@@ -123,7 +123,8 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                       style: GoogleFonts.lato(),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/storytelling_prep_1');
+                      Navigator.popAndPushNamed(
+                          context, '/storytelling_prep_1');
                     },
                   ),
                   ListTile(
@@ -132,7 +133,8 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                       style: GoogleFonts.lato(),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/storytelling_prep_2');
+                      Navigator.popAndPushNamed(
+                          context, '/storytelling_prep_2');
                     },
                   ),
                   ListTile(
@@ -141,7 +143,8 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                       style: GoogleFonts.lato(),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/storytelling_perform');
+                      Navigator.popAndPushNamed(
+                          context, '/storytelling_perform');
                     },
                   ),
                 ],
@@ -159,7 +162,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                       style: GoogleFonts.lato(),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/newscasting_prep_1');
+                      Navigator.popAndPushNamed(context, '/newscasting_prep_1');
                     },
                   ),
                   ListTile(
@@ -168,7 +171,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                       style: GoogleFonts.lato(),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/newscasting_prep_2');
+                      Navigator.popAndPushNamed(context, '/newscasting_prep_2');
                     },
                   ),
                   ListTile(
@@ -177,7 +180,8 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                       style: GoogleFonts.lato(),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/newscasting_perform');
+                      Navigator.popAndPushNamed(
+                          context, '/newscasting_perform');
                     },
                   )
                 ],
@@ -195,7 +199,8 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                       style: GoogleFonts.lato(),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/spelling_bee_perform');
+                      Navigator.popAndPushNamed(
+                          context, '/spelling_bee_perform');
                     },
                   ),
                 ],
@@ -213,7 +218,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                       style: GoogleFonts.lato(),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/debate_perform');
+                      Navigator.popAndPushNamed(context, '/debate_perform');
                     },
                   ),
                 ],
