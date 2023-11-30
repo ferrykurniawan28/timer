@@ -37,6 +37,7 @@ class _JamState extends State<Jam> {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           result,

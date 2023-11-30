@@ -19,9 +19,25 @@ class MainScreenMobile extends StatefulWidget {
 }
 
 class _MainScreenMobileState extends State<MainScreenMobile> {
+  // final MyExpansionTileController controllerSpeech =
+  //     MyExpansionTileController();
+  final ExpansionTileController controllerSpeech = ExpansionTileController();
+  final ExpansionTileController controllerStortel = ExpansionTileController();
+  final ExpansionTileController controllerNewscast = ExpansionTileController();
+  final ExpansionTileController controllerSpellbee = ExpansionTileController();
+  final ExpansionTileController controllerDebate = ExpansionTileController();
+  bool isExpandedSpeech = false;
+  bool isExpandedStortel = false;
+  bool isExpandedNewscast = false;
+  bool isExpandedSpellbee = false;
+  bool isExpandedDebate = false;
+
+  // final GlobalKey<ExpansionTileState> expansionTileKey = GlobalKey();
+
   Color gridColor = Colors.black54;
   bool isDesktop(BuildContext context) =>
       MediaQuery.of(context).size.width >= 800;
+
   @override
   Widget build(BuildContext context) {
     // final widthDevice = MediaQuery.of(context).size.width;
@@ -64,6 +80,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                     'Speech',
                     style: GoogleFonts.lato(),
                   ),
+                  controller: controllerSpeech,
                   children: [
                     ListTile(
                       title: Text(
@@ -98,6 +115,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                   'Storytelling',
                   style: GoogleFonts.lato(),
                 ),
+                controller: controllerStortel,
                 children: [
                   ListTile(
                     title: Text(
@@ -133,6 +151,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                   'Newscasting',
                   style: GoogleFonts.lato(),
                 ),
+                controller: controllerNewscast,
                 children: [
                   ListTile(
                     title: Text(
@@ -168,6 +187,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                   'Spelling Bee',
                   style: GoogleFonts.lato(),
                 ),
+                controller: controllerSpellbee,
                 children: [
                   ListTile(
                     title: Text(
@@ -185,6 +205,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                   'Debate',
                   style: GoogleFonts.lato(),
                 ),
+                controller: controllerDebate,
                 children: [
                   ListTile(
                     title: Text(
@@ -207,8 +228,8 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
             SizedBox(
               height: (isDesktop(context)) ? 150 : 100,
               child: Jam(
-                sizeDate: (isDesktop(context)) ? 40 : 30,
-                sizeHour: (isDesktop(context)) ? 35 : 25,
+                sizeDate: (isDesktop(context)) ? 40 : 25,
+                sizeHour: (isDesktop(context)) ? 35 : 23,
               ),
             ),
             StaggeredGrid.count(
@@ -220,151 +241,231 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                 StaggeredGridTile.count(
                   crossAxisCellCount: 1,
                   mainAxisCellCount: 1.2,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: gridColor,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Speech',
-                          style: GoogleFonts.lato(fontSize: 20),
+                  child: Builder(builder: (context) {
+                    return InkWell(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          if (controllerSpeech.isExpanded) {
+                            controllerSpeech.collapse();
+                          } else {
+                            controllerSpeech.expand();
+                          }
+                        });
+                      },
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: gridColor,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              'Speech',
+                              style: GoogleFonts.lato(fontSize: 20),
+                            ),
+                            const StreamTime(
+                              title: 'Prep room 1',
+                              room: 'prep room1',
+                              field: 'Speech',
+                            ),
+                            const StreamTime(
+                              title: 'Prep room 2',
+                              room: 'Prep room2',
+                              field: 'Speech',
+                            ),
+                            const StreamTime(
+                              title: 'Perform room',
+                              room: 'Perform room',
+                              field: 'Speech',
+                            ),
+                          ],
                         ),
-                        const StreamTime(
-                          title: 'Prep room 1',
-                          room: 'prep room1',
-                          field: 'Speech',
-                        ),
-                        const StreamTime(
-                          title: 'Prep room 2',
-                          room: 'Prep room2',
-                          field: 'Speech',
-                        ),
-                        const StreamTime(
-                          title: 'Perform room',
-                          room: 'Perform room',
-                          field: 'Speech',
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }),
                 ),
                 StaggeredGridTile.count(
                   crossAxisCellCount: 1,
                   mainAxisCellCount: 1.2,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: gridColor,
+                  child: Builder(builder: (context) {
+                    return InkWell(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          if (controllerStortel.isExpanded) {
+                            controllerStortel.collapse();
+                          } else {
+                            controllerStortel.expand();
+                          }
+                        });
+                      },
                       borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Storytelling',
-                          style: GoogleFonts.lato(fontSize: 20),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: gridColor,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        const StreamTime(
-                          title: 'Prep room 1',
-                          room: 'Prep room1',
-                          field: 'Storytelling',
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              'Storytelling',
+                              style: GoogleFonts.lato(fontSize: 20),
+                            ),
+                            const StreamTime(
+                              title: 'Prep room 1',
+                              room: 'Prep room1',
+                              field: 'Storytelling',
+                            ),
+                            const StreamTime(
+                              title: 'Prep room 2',
+                              room: 'Prep room2',
+                              field: 'Storytelling',
+                            ),
+                            const StreamTime(
+                              title: 'Perform room',
+                              room: 'Perform room',
+                              field: 'Storytelling',
+                            ),
+                          ],
                         ),
-                        const StreamTime(
-                          title: 'Prep room 2',
-                          room: 'Prep room2',
-                          field: 'Storytelling',
-                        ),
-                        const StreamTime(
-                          title: 'Perform room',
-                          room: 'Perform room',
-                          field: 'Storytelling',
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }),
                 ),
                 StaggeredGridTile.count(
                   mainAxisCellCount: 1.2,
                   crossAxisCellCount: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: gridColor,
+                  child: Builder(builder: (context) {
+                    return InkWell(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          if (controllerNewscast.isExpanded) {
+                            controllerNewscast.collapse();
+                          } else {
+                            controllerNewscast.expand();
+                          }
+                        });
+                      },
                       borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Newscasting',
-                          style: GoogleFonts.lato(fontSize: 20),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: gridColor,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        const StreamTime(
-                          title: 'Prep room 1',
-                          room: 'Prep room1',
-                          field: 'Newscasting',
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              'Newscasting',
+                              style: GoogleFonts.lato(fontSize: 20),
+                            ),
+                            const StreamTime(
+                              title: 'Prep room 1',
+                              room: 'Prep room1',
+                              field: 'Newscasting',
+                            ),
+                            const StreamTime(
+                              title: 'Prep room 2',
+                              room: 'Prep room2',
+                              field: 'Newscasting',
+                            ),
+                            const StreamTime(
+                              title: 'Perform room',
+                              room: 'Perform room',
+                              field: 'Newscasting',
+                            ),
+                          ],
                         ),
-                        const StreamTime(
-                          title: 'Prep room 2',
-                          room: 'Prep room2',
-                          field: 'Newscasting',
-                        ),
-                        const StreamTime(
-                          title: 'Perform room',
-                          room: 'Perform room',
-                          field: 'Newscasting',
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }),
                 ),
                 StaggeredGridTile.count(
                   crossAxisCellCount: 1,
                   mainAxisCellCount: 0.6,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: gridColor,
+                  child: Builder(builder: (context) {
+                    return InkWell(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          if (controllerSpellbee.isExpanded) {
+                            controllerSpellbee.collapse();
+                          } else {
+                            controllerSpellbee.expand();
+                          }
+                        });
+                      },
                       borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Spelling Bee',
-                          style: GoogleFonts.lato(fontSize: 20),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: gridColor,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        const StreamTime(
-                          title: 'Perform room',
-                          room: 'Perform room',
-                          field: 'Spelling Bee',
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              'Spelling Bee',
+                              style: GoogleFonts.lato(fontSize: 20),
+                            ),
+                            const StreamTime(
+                              title: 'Perform room',
+                              room: 'Perform room',
+                              field: 'Spelling Bee',
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }),
                 ),
                 StaggeredGridTile.count(
                   crossAxisCellCount: 1,
                   mainAxisCellCount: 0.6,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: gridColor,
+                  child: Builder(builder: (context) {
+                    return InkWell(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          if (controllerDebate.isExpanded) {
+                            controllerDebate.collapse();
+                          } else {
+                            controllerDebate.expand();
+                          }
+                        });
+                      },
                       borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Debate',
-                          style: GoogleFonts.lato(fontSize: 20),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: gridColor,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        const StreamTime(
-                          title: 'Perform room',
-                          room: 'Perform room',
-                          field: 'Debate',
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              'Debate',
+                              style: GoogleFonts.lato(fontSize: 20),
+                            ),
+                            const StreamTime(
+                              title: 'Perform room',
+                              room: 'Perform room',
+                              field: 'Debate',
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }),
                 )
               ],
             ),

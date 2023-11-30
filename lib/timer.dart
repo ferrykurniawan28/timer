@@ -1,9 +1,5 @@
 import 'dart:async';
-// import 'dart:ffi';
-// import 'dart:ffi';
 
-// import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +9,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 // import 'package:time/time.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:timer/queue.dart';
+import 'package:vibration/vibration.dart';
 
 FirebaseDatabase database = FirebaseDatabase.instance;
 
@@ -45,7 +42,7 @@ class _TimeState extends State<Time> {
   int _selectedValue = 0;
   final player = AudioPlayer();
   bool _isMounted = false; // final assetsAudioPlayer = AssetsAudioPlayer();
-  // AudioCache audioCache = AudioCache();
+  final vibration = Vibration.vibrate(pattern: [500, 1000, 500, 2000]);
 
   @override
   void initState() {
@@ -69,10 +66,6 @@ class _TimeState extends State<Time> {
           if (roomData != null && roomData is Map) {
             // Accessing the timestamp and isRunning values
             final timestamp = roomData['timestamp'];
-            // final isRunning = roomData['isRunning'];
-
-            // print('Timestamp: $timestamp');
-            // print('Is Running: $isRunning');
 
             setState(() {
               isTimerRunning = roomData['isRunning'];
@@ -87,18 +80,10 @@ class _TimeState extends State<Time> {
       // _updateTime();
       if (isTimerRunning) {
         _calculateTimeDifference();
-      } else {
-        // setState(() {});
-        // _stopTimer();
       }
     });
   }
 
-  // void _updateTime() {
-  //   setState(() {
-  //     _currentDateTime = DateTime.now();
-  //   });
-  // }
   void showError(String errorMessage, List<Widget> action) {
     showDialog(
       context: context,
@@ -115,10 +100,6 @@ class _TimeState extends State<Time> {
   }
 
   void _startTimer() async {
-    // player.play(
-    //   AssetSource('sm64_coin.mp3'),
-    // );
-    // playUrl('https://audio.jukehost.co.uk/bgX4iEoqWr5yhS1cFTMmMagQXN7f2K7N');
     if (_selectedValue == 0) {
       showError(
         'Please select a time!',
@@ -148,7 +129,6 @@ class _TimeState extends State<Time> {
 
     isTimerRunning = true;
 
-    // await _dataRef.child('time').set(_futureDateTime);
     try {
       await _dataRef.child(widget.field).child(widget.room).update({
         'timestamp': _futureDateTime.millisecondsSinceEpoch,
@@ -159,13 +139,11 @@ class _TimeState extends State<Time> {
     } finally {
       // print('Done writing to database');
     }
-
-    // _dataRef.child('dtime').set(_futureDateTime);
-    // await _dataRef.child('room1').set(_futureDateTime)
   }
 
   void _stopTimer() async {
     timer?.cancel();
+    player.stop();
     isTimerRunning = false;
     _futureDateTime = DateTime.now();
     _timeDifference = _futureDateTime.difference(DateTime.now());
@@ -174,11 +152,7 @@ class _TimeState extends State<Time> {
         'timestamp': _futureDateTime.millisecondsSinceEpoch,
         'isRunning': false
       });
-    } catch (error) {
-      // print(error);
-    } finally {
-      // print('Done writing to database');
-    }
+    } finally {}
 
     if (_isMounted) {
       setState(() {});
@@ -187,15 +161,33 @@ class _TimeState extends State<Time> {
   }
 
   void _calculateTimeDifference() async {
-    // futureTime = DateTime.fromMillisecondsSinceEpoch(future);
     DateTime currentDateTime = DateTime.now();
     _timeDifference = _futureDateTime.difference(currentDateTime);
 
     if (_timeDifference!.isNegative) {
-      // _timeDifference = const Duration(minutes: -2);
       if (_timeDifference!.inMinutes.abs() > 2) {
         _stopTimer();
-        // return;
+      }
+    }
+    if (widget.room != 'Perform room') {
+      if (_timeDifference!.inSeconds == 0) {
+        playUrl(
+            'https://audio.jukehost.co.uk/QKQLX1wM1sD4auo8CGAq5FLCCr7iawLF');
+        vibration;
+      }
+      if (_timeDifference!.isNegative) {
+        if (_timeDifference!.inMinutes.abs() == 1 &&
+            _timeDifference!.inSeconds.remainder(60) == 0) {
+          playUrl(
+              'https://audio.jukehost.co.uk/QKQLX1wM1sD4auo8CGAq5FLCCr7iawLF');
+          vibration;
+        }
+        if (_timeDifference!.inMinutes.abs() == 2 &&
+            _timeDifference!.inSeconds.remainder(60) == 0) {
+          playUrl(
+              'https://audio.jukehost.co.uk/QKQLX1wM1sD4auo8CGAq5FLCCr7iawLF');
+          vibration;
+        }
       }
     }
 
@@ -205,28 +197,20 @@ class _TimeState extends State<Time> {
           if (_timeDifference!.inSeconds.remainder(60) == 0) {
             playUrl(
                 'https://audio.jukehost.co.uk/bgX4iEoqWr5yhS1cFTMmMagQXN7f2K7N');
-            // assetsAudioPlayer.open(Audio("sm64_coin.mp3"), autoStart: true);
-            // AudioPlayer player = await audioCache.fixedPlayer('sm64_blue_coin.mp3');
           }
 
           break;
         case 1:
           if (_timeDifference!.inSeconds.remainder(60) == 0) {
             playUrl(
-                'https://audio.jukehost.co.uk/bgX4iEoqWr5yhS1cFTMmMagQXN7f2K7N');
-            // assetsAudioPlayer.open(Audio("sm64_coin.mp3"), autoStart: true);
+              'https://audio.jukehost.co.uk/bgX4iEoqWr5yhS1cFTMmMagQXN7f2K7N',
+            );
           }
           break;
         case 0:
           if (_timeDifference!.inSeconds == 0) {
-            // assetsAudioPlayer.open(Audio("sm64_coin.mp3"), autoStart: true);
             playUrl(
                 'https://audio.jukehost.co.uk/rKoErLE85r2ll4Pi8IfMhQMhGvSIJ4UE');
-            // AssetsAudioPlayer.open(
-            //   Audio("sm64_coin.mp3"),
-            //   autoStart: true,
-            //   // showNotification: true,
-            // );
           }
           break;
       }
@@ -241,7 +225,6 @@ class _TimeState extends State<Time> {
     if (_isMounted) {
       setState(() {});
     }
-    // setState(() {});
   }
 
   @override
@@ -357,21 +340,6 @@ class _TimeState extends State<Time> {
                     onPressed: _startTimer,
                     icon: const Icon(Icons.timer_outlined),
                   ),
-                  // CupertinoButton.filled(
-                  //   child: Text('Minutes: $_selectedValue'),
-                  //   onPressed: () => showCupertinoModalPopup(
-                  //     context: context,
-                  //     builder: (_) => SizedBox(
-                  //       height: 250,
-                  //       child: CupertinoPicker(
-                  //         scrollController: FixedExtentScrollController(),
-                  //         itemExtent: 30,
-                  //         onSelectedItemChanged: (int value) {},
-                  //         children: [],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   IconButton(
                     onPressed: _stopTimer,
                     icon: const Icon(Icons.timer_off_outlined),

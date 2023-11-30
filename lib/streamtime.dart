@@ -56,10 +56,7 @@ class _StreamTimeState extends State<StreamTime> {
       if (isTimerRunning) {
         _calculateTimeDifference();
       } else if (!isTimerRunning) {
-        setState(() {
-          _futureDateTime = DateTime.now();
-          // _timeDifference = Duration.zero;
-        });
+        _stopTimer();
       }
     });
   }
@@ -69,16 +66,6 @@ class _StreamTimeState extends State<StreamTime> {
     isTimerRunning = false;
     _futureDateTime = DateTime.now();
     _timeDifference = _futureDateTime.difference(DateTime.now());
-    // try {
-    //   await _dataRef.child(widget.field).child(widget.room).update({
-    //     'timestamp': _futureDateTime.millisecondsSinceEpoch,
-    //     'isRunning': false
-    //   });
-    // } catch (error) {
-    //   // print(error);
-    // } finally {
-    //   // print('Done writing to database');
-    // }
     setState(() {});
   }
 
@@ -94,19 +81,6 @@ class _StreamTimeState extends State<StreamTime> {
         return;
       }
     }
-
-    // if (!isTimerRunning) {
-    //   setState(() {
-    //     _timeDifference = null;
-    //   });
-    // }
-    // If the future date is in the past, stop the timer
-    // if (_timeDifference! <= Duration.zero) {
-    //   // timer?.cancel();
-    //   _timeDifference = Duration.zero;
-    //   // _stopTimer();
-    //   isTimerRunning = false;
-    // }
 
     setState(() {});
   }
