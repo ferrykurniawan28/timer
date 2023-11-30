@@ -19,20 +19,11 @@ class MainScreenMobile extends StatefulWidget {
 }
 
 class _MainScreenMobileState extends State<MainScreenMobile> {
-  // final MyExpansionTileController controllerSpeech =
-  //     MyExpansionTileController();
   final ExpansionTileController controllerSpeech = ExpansionTileController();
   final ExpansionTileController controllerStortel = ExpansionTileController();
   final ExpansionTileController controllerNewscast = ExpansionTileController();
   final ExpansionTileController controllerSpellbee = ExpansionTileController();
   final ExpansionTileController controllerDebate = ExpansionTileController();
-  bool isExpandedSpeech = false;
-  bool isExpandedStortel = false;
-  bool isExpandedNewscast = false;
-  bool isExpandedSpellbee = false;
-  bool isExpandedDebate = false;
-
-  // final GlobalKey<ExpansionTileState> expansionTileKey = GlobalKey();
 
   Color gridColor = Colors.black54;
   bool isDesktop(BuildContext context) =>
@@ -40,10 +31,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
 
   @override
   Widget build(BuildContext context) {
-    // final widthDevice = MediaQuery.of(context).size.width;
-
     return Scaffold(
-      // drawerScrimColor: Colors.white,
       appBar: AppBar(
         leading: Builder(builder: (context) {
           return IconButton(
@@ -59,7 +47,6 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
           style: GoogleFonts.lato(color: Colors.white),
         ),
         centerTitle: true,
-        // backgroundColor: Colors.blue,
       ),
       drawer: Drawer(
         // backgroundColor: Colors.white,
@@ -72,8 +59,6 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                   'AEO 2024',
                   style: GoogleFonts.lato(),
                 ),
-                // margin: EdgeInsets.all(20),
-                // decoration: BoxDecoration(),
               ),
               ExpansionTile(
                   title: Text(
