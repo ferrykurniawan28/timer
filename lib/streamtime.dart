@@ -9,10 +9,12 @@ class StreamTime extends StatefulWidget {
       {required this.title,
       required this.room,
       required this.field,
+      this.fontsize = 12,
       super.key});
   final String title;
   final String room;
   final String field;
+  final double fontsize;
 
   @override
   State<StreamTime> createState() => _StreamTimeState();
@@ -94,10 +96,22 @@ class _StreamTimeState extends State<StreamTime> {
       children: [
         Text(
           widget.title,
-          style: GoogleFonts.lato(),
+          style: GoogleFonts.lato(
+            fontSize: widget.fontsize,
+          ),
         ),
-        Text('Queue: ${queue.toString()}'),
-        Text('Time left: $count')
+        Text(
+          'Queue: ${queue.toString()}',
+          style: GoogleFonts.lato(
+            fontSize: widget.fontsize,
+          ),
+        ),
+        Text(
+          'Time left: $count',
+          style: GoogleFonts.lato(
+            fontSize: widget.fontsize,
+          ),
+        )
       ],
     );
   }

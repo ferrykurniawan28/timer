@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fullscreen_window/fullscreen_window.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 // import 'package:time/time.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:timer/queue.dart';
 import 'package:vibration/vibration.dart';
 
@@ -43,6 +45,8 @@ class _TimeState extends State<Time> {
   final player = AudioPlayer();
   bool _isMounted = false; // final assetsAudioPlayer = AssetsAudioPlayer();
   final vibration = Vibration.vibrate(pattern: [500, 1000, 500, 2000]);
+  bool _isFullscreen = false;
+  // bool showappbar = true;
 
   @override
   void initState() {
@@ -70,6 +74,12 @@ class _TimeState extends State<Time> {
             setState(() {
               isTimerRunning = roomData['isRunning'];
               _futureDateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+              _timeDifference = _futureDateTime.difference(DateTime.now());
+              if (roomData['minutes'] == null) {
+                _selectedValue = _selectedValue;
+              } else {
+                _selectedValue = roomData['minutes'];
+              }
             });
           }
         }
@@ -100,6 +110,7 @@ class _TimeState extends State<Time> {
   }
 
   void _startTimer() async {
+    player.stop();
     if (_selectedValue == 0) {
       showError(
         'Please select a time!',
@@ -132,7 +143,8 @@ class _TimeState extends State<Time> {
     try {
       await _dataRef.child(widget.field).child(widget.room).update({
         'timestamp': _futureDateTime.millisecondsSinceEpoch,
-        'isRunning': true
+        'isRunning': true,
+        'minutes': _selectedValue,
       });
     } catch (error) {
       // print(error);
@@ -144,13 +156,15 @@ class _TimeState extends State<Time> {
   void _stopTimer() async {
     timer?.cancel();
     player.stop();
+    // player.dispose();
     isTimerRunning = false;
     _futureDateTime = DateTime.now();
     _timeDifference = _futureDateTime.difference(DateTime.now());
     try {
       await _dataRef.child(widget.field).child(widget.room).update({
         'timestamp': _futureDateTime.millisecondsSinceEpoch,
-        'isRunning': false
+        'isRunning': false,
+        'minutes': _selectedValue,
       });
     } finally {}
 
@@ -169,26 +183,9 @@ class _TimeState extends State<Time> {
         _stopTimer();
       }
     }
-    if (widget.room != 'Perform room') {
-      if (_timeDifference!.inSeconds == 0) {
-        playUrl(
-            'https://audio.jukehost.co.uk/QKQLX1wM1sD4auo8CGAq5FLCCr7iawLF');
-        vibration;
-      }
-      if (_timeDifference!.isNegative) {
-        if (_timeDifference!.inMinutes.abs() == 1 &&
-            _timeDifference!.inSeconds.remainder(60) == 0) {
-          playUrl(
-              'https://audio.jukehost.co.uk/QKQLX1wM1sD4auo8CGAq5FLCCr7iawLF');
-          vibration;
-        }
-        if (_timeDifference!.inMinutes.abs() == 2 &&
-            _timeDifference!.inSeconds.remainder(60) == 0) {
-          playUrl(
-              'https://audio.jukehost.co.uk/QKQLX1wM1sD4auo8CGAq5FLCCr7iawLF');
-          vibration;
-        }
-      }
+    if (widget.room != 'Perform room' && _timeDifference!.inSeconds == 0) {
+      playUrl('https://audio.jukehost.co.uk/QKQLX1wM1sD4auo8CGAq5FLCCr7iawLF');
+      vibration;
     }
 
     if (widget.field == 'Debate') {
@@ -231,6 +228,7 @@ class _TimeState extends State<Time> {
   void dispose() {
     _isMounted = false;
     timer?.cancel();
+    player.dispose();
     super.dispose();
   }
 
@@ -247,113 +245,170 @@ class _TimeState extends State<Time> {
 
     return Scaffold(
       body: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            widget.title,
-            style: GoogleFonts.lato(color: Colors.white),
-          ),
-          centerTitle: true,
-          // backgroundColor: Colors.blue,
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                child: CircularPercentIndicator(
-                  radius: 70,
-                  // animation: true,
-                  // animateFromLastPercent: false,
-                  progressColor: (progress >= 0.2)
-                      ? const Color.fromARGB(255, 0, 152, 255)
-                      : Colors.red,
-                  lineWidth: 10,
-                  percent: progress,
-                  center: (widget.field != 'Debate')
-                      ? CupertinoButton(
-                          // color: Colors.blue,
-                          child: Text(
-                            count,
-                            style: GoogleFonts.lato(
-                                color: Colors.white, fontSize: 25),
-                          ),
-                          onPressed: () => showCupertinoModalPopup(
-                            context: context,
-                            builder: (_) => SizedBox(
-                              height: 250,
-                              child: CupertinoPicker(
-                                scrollController: FixedExtentScrollController(
-                                  initialItem: 0,
-                                ),
-                                itemExtent: 30,
-                                onSelectedItemChanged: (int value) {
-                                  final Map<int, int> time = {
-                                    0: 0,
-                                    1: 2,
-                                    2: 3,
-                                    3: 5,
-                                    4: 6,
-                                    5: 7,
-                                    6: 8,
-                                    7: 10,
-                                    8: 12,
-                                    9: 15,
-                                    10: 30,
-                                  };
-                                  setState(() {
-                                    _selectedValue = time[value]!;
-                                  });
-                                },
-                                children: const [
-                                  Text('00:00'),
-                                  Text('02:00'),
-                                  Text('03:00'),
-                                  Text('05:00'),
-                                  Text('06:00'),
-                                  Text('07:00'),
-                                  Text('08:00'),
-                                  Text('10:00'),
-                                  Text('12:00'),
-                                  Text('15:00'),
-                                  Text('30:00'),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      : Text(
-                          count,
-                          style: GoogleFonts.lato(
-                              color: Colors.white, fontSize: 25),
-                        ),
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              // Text(_timeDifference.toString()),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
+        appBar: (_isFullscreen)
+            ? null
+            : AppBar(
+                actions: [
                   IconButton(
-                    onPressed: _startTimer,
-                    icon: const Icon(Icons.timer_outlined),
-                  ),
-                  IconButton(
-                    onPressed: _stopTimer,
-                    icon: const Icon(Icons.timer_off_outlined),
+                    onPressed: () {
+                      setState(() {
+                        _isFullscreen = !_isFullscreen;
+                        FullScreenWindow.setFullScreen(_isFullscreen);
+                      });
+                    },
+                    icon: (_isFullscreen)
+                        ? const Icon(Icons.fullscreen_exit)
+                        : const Icon(Icons.fullscreen),
                   ),
                 ],
+                title: Text(
+                  widget.title,
+                  style: GoogleFonts.lato(color: Colors.white),
+                ),
+                centerTitle: true,
+                // backgroundColor: Colors.blue,
               ),
-              const SizedBox(
-                height: 30,
-              ),
-              QueNumber(field: widget.field, room: widget.room),
-            ],
-          ),
+        body: Center(
+          child: (_isFullscreen)
+              ? timerFullscren(progress, count, context)
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      child: CircularPercentIndicator(
+                        radius: 70,
+                        // animation: true,
+                        // animateFromLastPercent: false,
+                        progressColor: (progress >= 0.2)
+                            ? const Color.fromARGB(255, 0, 152, 255)
+                            : Colors.red,
+                        lineWidth: 10,
+                        percent: progress,
+                        center: (widget.field != 'Debate')
+                            ? CupertinoButton(
+                                // color: Colors.blue,
+                                child: Text(
+                                  count,
+                                  style: GoogleFonts.lato(
+                                      color: Colors.white, fontSize: 25),
+                                ),
+                                onPressed: () => showCupertinoModalPopup(
+                                  context: context,
+                                  builder: (_) => SizedBox(
+                                    height: 250,
+                                    child: CupertinoPicker(
+                                      scrollController:
+                                          FixedExtentScrollController(
+                                        initialItem: 0,
+                                      ),
+                                      itemExtent: 30,
+                                      onSelectedItemChanged: (int value) {
+                                        final Map<int, int> time = {
+                                          0: 0,
+                                          1: 2,
+                                          2: 3,
+                                          3: 5,
+                                          4: 6,
+                                          5: 7,
+                                          6: 8,
+                                          7: 10,
+                                          8: 12,
+                                          9: 15,
+                                          10: 30,
+                                        };
+                                        setState(() {
+                                          _selectedValue = time[value]!;
+                                        });
+                                      },
+                                      children: const [
+                                        Text('00:00'),
+                                        Text('02:00'),
+                                        Text('03:00'),
+                                        Text('05:00'),
+                                        Text('06:00'),
+                                        Text('07:00'),
+                                        Text('08:00'),
+                                        Text('10:00'),
+                                        Text('12:00'),
+                                        Text('15:00'),
+                                        Text('30:00'),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                count,
+                                style: GoogleFonts.lato(
+                                    color: Colors.white, fontSize: 25),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    // Text(_timeDifference.toString()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                            onPressed: _stopTimer,
+                            icon: const Icon(Icons.timer_off_outlined)
+                            // iconSize: 30,
+                            ),
+                        IconButton(
+                          onPressed: _startTimer,
+                          icon: const Icon(Icons.timer_outlined),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    QueNumber(field: widget.field, room: widget.room),
+                  ],
+                ),
+        ),
+        floatingActionButton: IconButton(
+          onPressed: () {
+            setState(() {
+              _isFullscreen = !_isFullscreen;
+              FullScreenWindow.setFullScreen(_isFullscreen);
+            });
+          },
+          icon: (_isFullscreen)
+              ? const Icon(Icons.fullscreen_exit)
+              : const Icon(Icons.fullscreen),
         ),
       ),
     );
   }
+}
+
+Widget timerFullscren(double progress, String count, context) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          count,
+          style: GoogleFonts.lato(
+            color: Colors.white,
+            fontSize: MediaQuery.of(context).size.width * 0.1,
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          width: MediaQuery.of(context).size.width - 100,
+          child: LinearPercentIndicator(
+            percent: progress,
+            // animation:   ,
+            lineHeight: 15,
+            progressColor: Colors.blue,
+          ),
+        ),
+      ],
+    ),
+  );
 }
