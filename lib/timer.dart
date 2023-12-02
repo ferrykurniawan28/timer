@@ -155,6 +155,7 @@ class _TimeState extends State<Time> {
 
   void _stopTimer() async {
     timer?.cancel();
+    await Future.delayed(const Duration(milliseconds: 100));
     player.stop();
     // player.dispose();
     isTimerRunning = false;
@@ -183,7 +184,9 @@ class _TimeState extends State<Time> {
         _stopTimer();
       }
     }
-    if (widget.room != 'Perform room' && _timeDifference!.inSeconds == 0) {
+    if (widget.room != 'Perform room' &&
+        _timeDifference!.inSeconds == 0 &&
+        isTimerRunning) {
       playUrl('https://audio.jukehost.co.uk/QKQLX1wM1sD4auo8CGAq5FLCCr7iawLF');
       vibration;
     }
