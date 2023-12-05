@@ -46,7 +46,7 @@ class _TimeState extends State<Time> {
   bool _isMounted = false; // final assetsAudioPlayer = AssetsAudioPlayer();
   final vibration = Vibration.vibrate(pattern: [500, 1000, 500, 2000]);
   bool _isFullscreen = false;
-  // bool showappbar = true;
+  int _selectedSeconds = 0;
 
   @override
   void initState() {
@@ -80,6 +80,11 @@ class _TimeState extends State<Time> {
               } else {
                 _selectedValue = roomData['minutes'];
               }
+              if (roomData['second'] == null) {
+                _selectedSeconds = _selectedSeconds;
+              } else {
+                _selectedSeconds = roomData['second'];
+              }
             });
           }
         }
@@ -111,7 +116,7 @@ class _TimeState extends State<Time> {
 
   void _startTimer() async {
     player.stop();
-    if (_selectedValue == 0) {
+    if (_selectedValue == 0 && _selectedSeconds == 0) {
       showError(
         'Please select a time!',
         [
@@ -125,7 +130,8 @@ class _TimeState extends State<Time> {
       );
       return;
     }
-    _futureDateTime = DateTime.now().add(Duration(minutes: _selectedValue));
+    _futureDateTime = DateTime.now()
+        .add(Duration(minutes: _selectedValue, seconds: _selectedSeconds));
 
     _timeDifference = Duration(minutes: _selectedValue);
 
@@ -145,6 +151,7 @@ class _TimeState extends State<Time> {
         'timestamp': _futureDateTime.millisecondsSinceEpoch,
         'isRunning': true,
         'minutes': _selectedValue,
+        'second': _selectedSeconds
       });
     } catch (error) {
       // print(error);
@@ -166,6 +173,7 @@ class _TimeState extends State<Time> {
         'timestamp': _futureDateTime.millisecondsSinceEpoch,
         'isRunning': false,
         'minutes': _selectedValue,
+        'second': _selectedSeconds
       });
     } finally {}
 
@@ -227,6 +235,10 @@ class _TimeState extends State<Time> {
     }
   }
 
+  String padWithZero(int value) {
+    return value.toString().padLeft(2, '0');
+  }
+
   @override
   void dispose() {
     _isMounted = false;
@@ -237,13 +249,28 @@ class _TimeState extends State<Time> {
 
   @override
   Widget build(BuildContext context) {
-    String count = isTimerRunning
-        ? '${_timeDifference!.inMinutes.remainder(60).toString().padLeft(2, '0')}:${_timeDifference!.inSeconds.remainder(60).toString().padLeft(2, '0')}'
-        : '$_selectedValue:00';
+    int minutes;
+    int seconds;
+    String count;
+
+    if (isTimerRunning) {
+      minutes = _timeDifference!.inMinutes.remainder(60);
+      seconds = _timeDifference!.inSeconds.remainder(60);
+
+      String minuteString = minutes.toString().padLeft(2, '0');
+      String secondString = seconds.toString().padLeft(2, '0');
+
+      count = '$minuteString:$secondString';
+    } else {
+      minutes = _selectedValue;
+      seconds = _selectedSeconds;
+      count = '$_selectedValue:$_selectedSeconds';
+    }
 
     double progress = _timeDifference != null
-        ? (_timeDifference!.inSeconds / (_selectedValue * 60))
-            .clamp(0, 1) // Assuming the timer is set for 30 seconds
+        ? (_timeDifference!.inSeconds /
+                (_selectedValue * 60 + _selectedSeconds))
+            .clamp(0, 1)
         : 1.0;
 
     return Scaffold(
@@ -289,57 +316,82 @@ class _TimeState extends State<Time> {
                         lineWidth: 10,
                         percent: progress,
                         center: (widget.field != 'Debate')
-                            ? CupertinoButton(
-                                // color: Colors.blue,
-                                child: Text(
-                                  count,
-                                  style: GoogleFonts.lato(
-                                      color: Colors.white, fontSize: 25),
-                                ),
-                                onPressed: () => showCupertinoModalPopup(
-                                  context: context,
-                                  builder: (_) => SizedBox(
-                                    height: 250,
-                                    child: CupertinoPicker(
-                                      scrollController:
-                                          FixedExtentScrollController(
-                                        initialItem: 0,
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 66,
+                                    child: CupertinoButton(
+                                      // color: Colors.blue,
+                                      child: Text(
+                                        padWithZero(minutes),
+                                        style: GoogleFonts.lato(
+                                            color: Colors.white, fontSize: 25),
                                       ),
-                                      itemExtent: 30,
-                                      onSelectedItemChanged: (int value) {
-                                        final Map<int, int> time = {
-                                          0: 0,
-                                          1: 2,
-                                          2: 3,
-                                          3: 5,
-                                          4: 6,
-                                          5: 7,
-                                          6: 8,
-                                          7: 10,
-                                          8: 12,
-                                          9: 15,
-                                          10: 30,
-                                        };
-                                        setState(() {
-                                          _selectedValue = time[value]!;
-                                        });
-                                      },
-                                      children: const [
-                                        Text('00:00'),
-                                        Text('02:00'),
-                                        Text('03:00'),
-                                        Text('05:00'),
-                                        Text('06:00'),
-                                        Text('07:00'),
-                                        Text('08:00'),
-                                        Text('10:00'),
-                                        Text('12:00'),
-                                        Text('15:00'),
-                                        Text('30:00'),
-                                      ],
+                                      onPressed: () => showCupertinoModalPopup(
+                                        context: context,
+                                        builder: (_) => SizedBox(
+                                          height: 250,
+                                          child: CupertinoPicker(
+                                            scrollController:
+                                                FixedExtentScrollController(
+                                              initialItem: 0,
+                                            ),
+                                            itemExtent: 25,
+                                            onSelectedItemChanged: (int value) {
+                                              setState(() {
+                                                _selectedValue = value;
+                                              });
+                                            },
+                                            children: [
+                                              for (int i = 0; i < 61; i++)
+                                                Text(padWithZero(i))
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  Text(
+                                    ':',
+                                    style: GoogleFonts.lato(
+                                        color: Colors.white, fontSize: 25),
+                                  ),
+                                  SizedBox(
+                                    width: 66,
+                                    child: CupertinoButton(
+                                      // color: Colors.blue,
+                                      child: Text(
+                                        padWithZero(seconds),
+                                        style: GoogleFonts.lato(
+                                            color: Colors.white, fontSize: 25),
+                                      ),
+                                      onPressed: () => showCupertinoModalPopup(
+                                        context: context,
+                                        builder: (_) => SizedBox(
+                                          height: 250,
+                                          child: CupertinoPicker(
+                                            scrollController:
+                                                FixedExtentScrollController(
+                                              initialItem: 0,
+                                            ),
+                                            itemExtent: 25,
+                                            onSelectedItemChanged: (int value) {
+                                              setState(() {
+                                                _selectedSeconds = value;
+                                              });
+                                            },
+                                            children: [
+                                              for (int i = 0; i < 61; i++)
+                                                Text(padWithZero(i))
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               )
                             : Text(
                                 count,

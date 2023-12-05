@@ -56,10 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       }
-      // FirebaseFirestore.instance.collection('user').doc('roles').set({
-      //   'email': _email.text,
-      //   'roles': roles[_email.text],
-      // });
     }
   }
 
@@ -75,10 +71,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Login'),
-      //   centerTitle: true,
-      // ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
