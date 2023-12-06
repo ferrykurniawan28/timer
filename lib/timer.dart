@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fullscreen_window/fullscreen_window.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:intl/intl.dart';
@@ -249,6 +250,7 @@ class _TimeState extends State<Time> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> screenDisplay;
     int minutes;
     int seconds;
     String count;
@@ -264,7 +266,7 @@ class _TimeState extends State<Time> {
     } else {
       minutes = _selectedValue;
       seconds = _selectedSeconds;
-      count = '$_selectedValue:$_selectedSeconds';
+      count = '${padWithZero(_selectedValue)}:${padWithZero(_selectedSeconds)}';
     }
 
     double progress = _timeDifference != null
@@ -307,25 +309,24 @@ class _TimeState extends State<Time> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       child: CircularPercentIndicator(
-                        radius: 70,
+                        radius: 100,
                         // animation: true,
                         // animateFromLastPercent: false,
                         progressColor: (progress >= 0.2)
                             ? const Color.fromARGB(255, 0, 152, 255)
                             : Colors.red,
-                        lineWidth: 10,
+                        lineWidth: 15,
                         percent: progress,
                         center: (widget.field != 'Debate')
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 66,
-                                    child: CupertinoButton(
+                            ? SizedBox(
+                                // width: 66,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CupertinoButton(
                                       // color: Colors.blue,
                                       child: Text(
-                                        padWithZero(minutes),
+                                        '${padWithZero(minutes)} : ${padWithZero(seconds)}',
                                         style: GoogleFonts.lato(
                                             color: Colors.white, fontSize: 25),
                                       ),
@@ -333,65 +334,53 @@ class _TimeState extends State<Time> {
                                         context: context,
                                         builder: (_) => SizedBox(
                                           height: 250,
-                                          child: CupertinoPicker(
-                                            scrollController:
-                                                FixedExtentScrollController(
-                                              initialItem: 0,
-                                            ),
-                                            itemExtent: 25,
-                                            onSelectedItemChanged: (int value) {
-                                              setState(() {
-                                                _selectedValue = value;
-                                              });
-                                            },
+                                          child: Row(
                                             children: [
-                                              for (int i = 0; i < 61; i++)
-                                                Text(padWithZero(i))
+                                              Expanded(
+                                                child: CupertinoPicker(
+                                                  scrollController:
+                                                      FixedExtentScrollController(
+                                                    initialItem: 0,
+                                                  ),
+                                                  itemExtent: 25,
+                                                  onSelectedItemChanged:
+                                                      (int value) {
+                                                    setState(() {
+                                                      _selectedValue = value;
+                                                    });
+                                                  },
+                                                  children: [
+                                                    for (int i = 0; i < 61; i++)
+                                                      Text(padWithZero(i))
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: CupertinoPicker(
+                                                  scrollController:
+                                                      FixedExtentScrollController(
+                                                    initialItem: 0,
+                                                  ),
+                                                  itemExtent: 25,
+                                                  onSelectedItemChanged:
+                                                      (int value) {
+                                                    setState(() {
+                                                      _selectedSeconds = value;
+                                                    });
+                                                  },
+                                                  children: [
+                                                    for (int i = 0; i < 61; i++)
+                                                      Text(padWithZero(i))
+                                                  ],
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Text(
-                                    ':',
-                                    style: GoogleFonts.lato(
-                                        color: Colors.white, fontSize: 25),
-                                  ),
-                                  SizedBox(
-                                    width: 66,
-                                    child: CupertinoButton(
-                                      // color: Colors.blue,
-                                      child: Text(
-                                        padWithZero(seconds),
-                                        style: GoogleFonts.lato(
-                                            color: Colors.white, fontSize: 25),
-                                      ),
-                                      onPressed: () => showCupertinoModalPopup(
-                                        context: context,
-                                        builder: (_) => SizedBox(
-                                          height: 250,
-                                          child: CupertinoPicker(
-                                            scrollController:
-                                                FixedExtentScrollController(
-                                              initialItem: 0,
-                                            ),
-                                            itemExtent: 25,
-                                            onSelectedItemChanged: (int value) {
-                                              setState(() {
-                                                _selectedSeconds = value;
-                                              });
-                                            },
-                                            children: [
-                                              for (int i = 0; i < 61; i++)
-                                                Text(padWithZero(i))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               )
                             : Text(
                                 count,
@@ -435,6 +424,7 @@ class _TimeState extends State<Time> {
           icon: (_isFullscreen)
               ? const Icon(Icons.fullscreen_exit)
               : const Icon(Icons.fullscreen),
+          iconSize: 30,
         ),
       ),
     );
