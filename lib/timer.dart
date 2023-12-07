@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fullscreen_window/fullscreen_window.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:intl/intl.dart';
@@ -250,7 +249,6 @@ class _TimeState extends State<Time> {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> screenDisplay;
     int minutes;
     int seconds;
     String count;

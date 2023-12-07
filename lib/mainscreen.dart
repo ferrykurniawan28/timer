@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:timer/jam.dart';
-import 'package:timer/streamtime.dart';
+import 'package:timer/my_flutter_app_icons.dart';
 import 'package:timer/viewfield.dart';
+
+import 'column__widget.dart';
 // import 'package:flutter/widgets.dart';
 
 DatabaseReference ref = FirebaseDatabase.instance.ref();
@@ -31,6 +33,14 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
   Color gridColor = Colors.black54;
   bool isDesktop(BuildContext context) =>
       MediaQuery.of(context).size.width >= 800;
+
+  final iconfield = {
+    'Debate': MyFlutterApp.debate,
+    'Newscasting': MyFlutterApp.newscaster,
+    'Storytelling': MyFlutterApp.storytelling,
+    'Spelling Bee': MyFlutterApp.bee,
+    'Speech': MyFlutterApp.speaker,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +86,17 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
               ),
               if (widget.role == 'speech' || widget.role == 'admin')
                 ExpansionTile(
-                    title: Text(
-                      'Speech',
-                      style: GoogleFonts.lato(),
+                    title: Row(
+                      children: [
+                        Icon(iconfield['Speech']),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          'Speech',
+                          style: GoogleFonts.lato(),
+                        ),
+                      ],
                     ),
                     controller: controllerSpeech,
                     children: [
@@ -112,9 +130,17 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                     ]),
               if (widget.role == 'stortel' || widget.role == 'admin')
                 ExpansionTile(
-                  title: Text(
-                    'Storytelling',
-                    style: GoogleFonts.lato(),
+                  title: Row(
+                    children: [
+                      Icon(iconfield['Storytelling']),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        'Storytelling',
+                        style: GoogleFonts.lato(),
+                      ),
+                    ],
                   ),
                   controller: controllerStortel,
                   children: [
@@ -152,9 +178,17 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                 ),
               if (widget.role == 'newscast' || widget.role == 'admin')
                 ExpansionTile(
-                  title: Text(
-                    'Newscasting',
-                    style: GoogleFonts.lato(),
+                  title: Row(
+                    children: [
+                      Icon(iconfield['Newscasting']),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        'Newscasting',
+                        style: GoogleFonts.lato(),
+                      ),
+                    ],
                   ),
                   controller: controllerNewscast,
                   children: [
@@ -192,9 +226,17 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                 ),
               if (widget.role == 'spellbe' || widget.role == 'admin')
                 ExpansionTile(
-                  title: Text(
-                    'Spelling Bee',
-                    style: GoogleFonts.lato(),
+                  title: Row(
+                    children: [
+                      Icon(iconfield['Spelling Bee']),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        'Spelling Bee',
+                        style: GoogleFonts.lato(),
+                      ),
+                    ],
                   ),
                   controller: controllerSpellbee,
                   children: [
@@ -232,9 +274,17 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                 ),
               if (widget.role == 'debate' || widget.role == 'admin')
                 ExpansionTile(
-                  title: Text(
-                    'Debate',
-                    style: GoogleFonts.lato(),
+                  title: Row(
+                    children: [
+                      Icon(iconfield['Debate']),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        'Debate',
+                        style: GoogleFonts.lato(),
+                      ),
+                    ],
                   ),
                   controller: controllerDebate,
                   children: [
@@ -277,247 +327,44 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                     StaggeredGridTile.count(
                       crossAxisCellCount: 1,
                       mainAxisCellCount: 1.2,
-                      child: Builder(builder: (context) {
-                        return InkWell(
-                          onTap: () {
-                            Scaffold.of(context).openDrawer();
-
-                            Future.delayed(const Duration(milliseconds: 100),
-                                () {
-                              if (controllerSpeech.isExpanded) {
-                                controllerSpeech.collapse();
-                              } else {
-                                controllerSpeech.expand();
-                              }
-                            });
-                          },
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: gridColor,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  'Speech',
-                                  style: GoogleFonts.lato(fontSize: 20),
-                                ),
-                                const StreamTime(
-                                  title: 'Prep room 1',
-                                  room: 'prep room1',
-                                  field: 'Speech',
-                                ),
-                                const StreamTime(
-                                  title: 'Prep room 2',
-                                  room: 'Prep room2',
-                                  field: 'Speech',
-                                ),
-                                const StreamTime(
-                                  title: 'Perform room',
-                                  room: 'Perform room',
-                                  field: 'Speech',
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
+                      child: Column_Widget(
+                        controllerSpeech: controllerSpeech,
+                        gridColor: gridColor,
+                        field: 'Speech',
+                      ),
                     ),
                     // (widget.role == 'speech')
                     StaggeredGridTile.count(
                       crossAxisCellCount: 1,
                       mainAxisCellCount: 1.2,
-                      child: Builder(builder: (context) {
-                        return InkWell(
-                          onTap: () {
-                            Scaffold.of(context).openDrawer();
-
-                            Future.delayed(const Duration(milliseconds: 100),
-                                () {
-                              if (controllerStortel.isExpanded) {
-                                controllerStortel.collapse();
-                              } else {
-                                controllerStortel.expand();
-                              }
-                            });
-                          },
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: gridColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  'Storytelling',
-                                  style: GoogleFonts.lato(fontSize: 20),
-                                ),
-                                const StreamTime(
-                                  title: 'Prep room 1',
-                                  room: 'Prep room1',
-                                  field: 'Storytelling',
-                                ),
-                                const StreamTime(
-                                  title: 'Prep room 2',
-                                  room: 'Prep room2',
-                                  field: 'Storytelling',
-                                ),
-                                const StreamTime(
-                                  title: 'Perform room',
-                                  room: 'Perform room',
-                                  field: 'Storytelling',
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
+                      child: Column_Widget(
+                          controllerSpeech: controllerStortel,
+                          gridColor: gridColor,
+                          field: 'Storytelling'),
                     ),
                     StaggeredGridTile.count(
                       mainAxisCellCount: 1.2,
                       crossAxisCellCount: 1,
-                      child: Builder(builder: (context) {
-                        return InkWell(
-                          onTap: () {
-                            Scaffold.of(context).openDrawer();
-
-                            Future.delayed(const Duration(milliseconds: 100),
-                                () {
-                              if (controllerNewscast.isExpanded) {
-                                controllerNewscast.collapse();
-                              } else {
-                                controllerNewscast.expand();
-                              }
-                            });
-                          },
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: gridColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  'Newscasting',
-                                  style: GoogleFonts.lato(fontSize: 20),
-                                ),
-                                const StreamTime(
-                                  title: 'Prep room 1',
-                                  room: 'Prep room1',
-                                  field: 'Newscasting',
-                                ),
-                                const StreamTime(
-                                  title: 'Prep room 2',
-                                  room: 'Prep room2',
-                                  field: 'Newscasting',
-                                ),
-                                const StreamTime(
-                                  title: 'Perform room',
-                                  room: 'Perform room',
-                                  field: 'Newscasting',
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
+                      child: Column_Widget(
+                          controllerSpeech: controllerNewscast,
+                          gridColor: gridColor,
+                          field: 'Newscasting'),
                     ),
                     StaggeredGridTile.count(
                       crossAxisCellCount: 1,
                       mainAxisCellCount: 1.2,
-                      child: Builder(builder: (context) {
-                        return InkWell(
-                          onTap: () {
-                            Scaffold.of(context).openDrawer();
-
-                            Future.delayed(const Duration(milliseconds: 100),
-                                () {
-                              if (controllerSpellbee.isExpanded) {
-                                controllerSpellbee.collapse();
-                              } else {
-                                controllerSpellbee.expand();
-                              }
-                            });
-                          },
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: gridColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  'Spelling Bee',
-                                  style: GoogleFonts.lato(fontSize: 20),
-                                ),
-                                const StreamTime(
-                                  title: 'Prep room 1',
-                                  room: 'Prep room1',
-                                  field: 'Spelling Bee',
-                                ),
-                                const StreamTime(
-                                  title: 'Prep room 2',
-                                  room: 'Prep room2',
-                                  field: 'Spelling Bee',
-                                ),
-                                const StreamTime(
-                                  title: 'Perform room',
-                                  room: 'Perform room',
-                                  field: 'Spelling Bee',
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
+                      child: Column_Widget(
+                          controllerSpeech: controllerSpellbee,
+                          gridColor: gridColor,
+                          field: 'Spelling Bee'),
                     ),
                     StaggeredGridTile.count(
                       crossAxisCellCount: 2,
                       mainAxisCellCount: 0.6,
-                      child: Builder(builder: (context) {
-                        return InkWell(
-                          onTap: () {
-                            Scaffold.of(context).openDrawer();
-
-                            Future.delayed(const Duration(milliseconds: 100),
-                                () {
-                              if (controllerDebate.isExpanded) {
-                                controllerDebate.collapse();
-                              } else {
-                                controllerDebate.expand();
-                              }
-                            });
-                          },
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: gridColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  'Debate',
-                                  style: GoogleFonts.lato(fontSize: 20),
-                                ),
-                                const StreamTime(
-                                  title: 'Perform room',
-                                  room: 'Perform room',
-                                  field: 'Debate',
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
+                      child: Column_Widget(
+                          controllerSpeech: controllerDebate,
+                          gridColor: gridColor,
+                          field: 'Debate'),
                     )
                   ],
                 ),

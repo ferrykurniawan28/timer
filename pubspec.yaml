@@ -35,8 +35,13 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: MyFlutterApp
+      fonts:
+        - asset: assets/font/MyFlutterApp.ttf
   assets:
+    - assets/icon/
     - assets/
-
+    # - assets/font/
   # - assets/sound/sm64_coin.mp3
   # - assets/sound/assets/sound/sm64_coin.mp3

@@ -93,6 +93,7 @@ class _StreamTimeState extends State<StreamTime> {
         ? '${_timeDifference!.inMinutes.remainder(60).toString().padLeft(2, '0')}:${_timeDifference!.inSeconds.remainder(60).toString().padLeft(2, '0')}'
         : '00:00';
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Text(
           widget.title,

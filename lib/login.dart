@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> form = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _password = TextEditingController();
+  bool isAuthenticating = false;
 
   Map<String, String> roles = {
     'aeo.director@aeo.com': 'admin',
@@ -35,6 +36,9 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       form.currentState!.save();
       try {
+        setState(() {
+          isAuthenticating = true;
+        });
         final credential = await _auth.signInWithEmailAndPassword(
           email: _email.text,
           password: _password.text,
@@ -56,6 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       }
+      setState(() {
+        isAuthenticating = false;
+      });
     }
   }
 
@@ -126,16 +133,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             border: OutlineInputBorder(),
                           ),
                         ),
-                        ElevatedButton(
-                          onPressed: _submit,
-                          child: Text(
-                            'Login',
-                            style: GoogleFonts.lato(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                        if (isAuthenticating) const CircularProgressIndicator(),
+                        if (!isAuthenticating)
+                          ElevatedButton(
+                            onPressed: _submit,
+                            child: Text(
+                              'Login',
+                              style: GoogleFonts.lato(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
