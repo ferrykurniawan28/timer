@@ -32,7 +32,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
 
   Color gridColor = Colors.black54;
   bool isDesktop(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 800;
+      MediaQuery.of(context).size.width >= 1290;
 
   final iconfield = {
     'Debate': MyFlutterApp.debate,
@@ -45,7 +45,9 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: ColorPalette().purpel3(1),
       appBar: AppBar(
+        // backgroundColor: Colors.purple[900]!,
         actions: [
           IconButton(
             onPressed: () {
@@ -67,7 +69,7 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
           );
         }),
         title: Text(
-          'Homepage',
+          'Home ',
           style: GoogleFonts.lato(color: Colors.white),
         ),
         centerTitle: true,
@@ -326,45 +328,54 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
                   children: [
                     StaggeredGridTile.count(
                       crossAxisCellCount: 1,
-                      mainAxisCellCount: 1.2,
+                      mainAxisCellCount: 1.3,
                       child: Column_Widget(
                         controllerSpeech: controllerSpeech,
-                        gridColor: gridColor,
+                        gridColor: Colors.green[500]!,
                         field: 'Speech',
+                        isDesktop: isDesktop(context),
                       ),
                     ),
                     // (widget.role == 'speech')
                     StaggeredGridTile.count(
                       crossAxisCellCount: 1,
-                      mainAxisCellCount: 1.2,
+                      mainAxisCellCount: 1.3,
                       child: Column_Widget(
-                          controllerSpeech: controllerStortel,
-                          gridColor: gridColor,
-                          field: 'Storytelling'),
+                        controllerSpeech: controllerStortel,
+                        gridColor: Colors.blue[700]!,
+                        field: 'Storytelling',
+                        isDesktop: isDesktop(context),
+                      ),
                     ),
                     StaggeredGridTile.count(
-                      mainAxisCellCount: 1.2,
+                      mainAxisCellCount: 1.3,
                       crossAxisCellCount: 1,
                       child: Column_Widget(
-                          controllerSpeech: controllerNewscast,
-                          gridColor: gridColor,
-                          field: 'Newscasting'),
+                        controllerSpeech: controllerNewscast,
+                        gridColor: Colors.purple[400]!,
+                        field: 'Newscasting',
+                        isDesktop: isDesktop(context),
+                      ),
                     ),
                     StaggeredGridTile.count(
                       crossAxisCellCount: 1,
-                      mainAxisCellCount: 1.2,
+                      mainAxisCellCount: 1.3,
                       child: Column_Widget(
-                          controllerSpeech: controllerSpellbee,
-                          gridColor: gridColor,
-                          field: 'Spelling Bee'),
+                        controllerSpeech: controllerSpellbee,
+                        gridColor: Colors.pink[400]!,
+                        field: 'Spelling Bee',
+                        isDesktop: isDesktop(context),
+                      ),
                     ),
                     StaggeredGridTile.count(
                       crossAxisCellCount: 2,
-                      mainAxisCellCount: 0.6,
+                      mainAxisCellCount: 0.7,
                       child: Column_Widget(
-                          controllerSpeech: controllerDebate,
-                          gridColor: gridColor,
-                          field: 'Debate'),
+                        controllerSpeech: controllerDebate,
+                        gridColor: Colors.teal[600]!,
+                        field: 'Debate',
+                        isDesktop: isDesktop(context),
+                      ),
                     )
                   ],
                 ),

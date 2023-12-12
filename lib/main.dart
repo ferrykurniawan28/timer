@@ -122,6 +122,7 @@ class MainApp extends StatelessWidget {
               room: 'Perform room',
             ),
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }

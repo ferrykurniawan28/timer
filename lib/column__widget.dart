@@ -10,11 +10,13 @@ class Column_Widget extends StatelessWidget {
       {super.key,
       required this.controllerSpeech,
       required this.gridColor,
-      required this.field});
+      required this.field,
+      required this.isDesktop});
 
   final ExpansionTileController controllerSpeech;
   final Color gridColor;
   final String field;
+  final bool isDesktop;
 
   @override
   Widget build(BuildContext context) {
@@ -45,36 +47,69 @@ class Column_Widget extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(iconfield[field]),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    field,
-                    style: GoogleFonts.lato(fontSize: 20),
-                  ),
-                ],
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      iconfield[field],
+                      size: 50,
+                    ),
+                    SizedBox(
+                      width: (isDesktop) ? 30 : 10,
+                    ),
+                    Text(
+                      field,
+                      style: GoogleFonts.lato(fontSize: 20),
+                    ),
+                  ],
+                ),
               ),
+              // const SizedBox(
+              //   height: 10,
+              // ),
               if (field != 'Debate')
-                StreamTime(
-                  title: 'Prep room 1',
-                  room: 'prep room1',
-                  field: field,
+                Expanded(
+                  child: StreamTime(
+                    title: 'Prep room 1',
+                    room: 'prep room1',
+                    field: field,
+                    fontsize: (isDesktop) ? 20 : 13,
+                  ),
+                ),
+              if (isDesktop)
+                const SizedBox(
+                  height: 10,
                 ),
               if (field != 'Debate')
-                StreamTime(
-                  title: 'Prep room 2',
-                  room: 'Prep room2',
-                  field: field,
+                Expanded(
+                  child: StreamTime(
+                    title: 'Prep room 2',
+                    room: 'Prep room2',
+                    field: field,
+                    fontsize: (isDesktop) ? 20 : 13,
+                  ),
                 ),
-              StreamTime(
-                title: 'Perform room',
-                room: 'Perform room',
-                field: field,
+              if (isDesktop)
+                const SizedBox(
+                  height: 10,
+                ),
+              Expanded(
+                child: StreamTime(
+                  title: 'Perform room',
+                  room: 'Perform room',
+                  field: field,
+                  fontsize: (isDesktop) ? 20 : 13,
+                ),
               ),
+              if (isDesktop)
+                const SizedBox(
+                  height: 10,
+                ),
+              if (field != 'Debate')
+                const SizedBox(
+                  height: 30,
+                )
             ],
           ),
         ),

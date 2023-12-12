@@ -10,7 +10,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(children: [Text('Loading')]),
     );
   }
