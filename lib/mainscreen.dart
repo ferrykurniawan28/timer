@@ -43,15 +43,29 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
             icon: const Icon(Icons.logout),
           )
         ],
-        leading: Builder(builder: (context) {
-          return IconButton(
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-            color: Colors.white,
-            icon: const Icon(Icons.menu),
-          );
-        }),
+        leading: FutureBuilder(
+          future: isAdmin(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                signOut();
+                Navigator.pushNamed(context, '/');
+              } else if (snapshot.data == true) {
+                return IconButton(
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  color: Colors.white,
+                  icon: const Icon(Icons.menu),
+                );
+              } else {
+                return Container();
+              }
+            }
+
+            return Container();
+          },
+        ),
         title: Text(
           'Homepage',
           style: GoogleFonts.lato(color: Colors.white),
