@@ -14,6 +14,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:timer/queue.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'is_admin.dart';
 
 FirebaseDatabase database = FirebaseDatabase.instance;
 
@@ -46,12 +47,16 @@ class _TimeState extends State<Time> {
   int _selectedValue = 0;
   final player = AudioPlayer();
   bool _isMounted = false; // final assetsAudioPlayer = AssetsAudioPlayer();
+  bool isUserAdmin = false;
   // AudioCache audioCache = AudioCache();
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
     _isMounted = true;
+
+    // determine if user is admin
+    isUserAdmin = await isAdmin();
 
     if (widget.field == 'Debate') {
       _selectedValue = 7;
@@ -254,8 +259,8 @@ class _TimeState extends State<Time> {
 
   @override
   Widget build(BuildContext context) {
-    // if user is not logged in
-    if (FirebaseAuth.instance.currentUser == null) {
+    // if user is not logged in or not admin go to main screen
+    if (FirebaseAuth.instance.currentUser == null || !isUserAdmin) {
       Navigator.pushNamed(context, '/');
     }
 
