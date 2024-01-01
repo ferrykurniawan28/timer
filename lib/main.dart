@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'package:google_fonts/google_fonts.dart';
-import 'package:timer/mainscreen.dart';
+// import 'package:timer/mainscreen.dart';
 // import 'package:timer/mainscreen.dart';
 import 'package:timer/timer.dart';
 import 'firebase_options.dart';
+import 'auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,7 @@ class MainApp extends StatelessWidget {
       // home: const MainScreenMobile(),
       initialRoute: '/',
       routes: {
-        '/': (context) => const MainScreenMobile(),
+        '/': (context) => const AuthPage(),
         '/speech_prep_1': (context) => const Time(
               title: 'Prep room 1',
               field: 'Speech',

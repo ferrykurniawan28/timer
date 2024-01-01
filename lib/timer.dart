@@ -3,7 +3,7 @@ import 'dart:async';
 // import 'dart:ffi';
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
+// import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +13,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 // import 'package:time/time.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:timer/queue.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 FirebaseDatabase database = FirebaseDatabase.instance;
 
@@ -253,6 +254,11 @@ class _TimeState extends State<Time> {
 
   @override
   Widget build(BuildContext context) {
+    // if user is not logged in
+    if (FirebaseAuth.instance.currentUser == null) {
+      Navigator.pushNamed(context, '/');
+    }
+
     String count = isTimerRunning
         ? '${_timeDifference!.inMinutes.remainder(60).toString().padLeft(2, '0')}:${_timeDifference!.inSeconds.remainder(60).toString().padLeft(2, '0')}'
         : '$_selectedValue:00';

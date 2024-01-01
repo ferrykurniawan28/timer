@@ -6,7 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:timer/jam.dart';
 import 'package:timer/streamtime.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/widgets.dart';
+import 'is_admin.dart';
 
 DatabaseReference ref = FirebaseDatabase.instance.ref();
 // final db = FirebaseFirestore.instance;
@@ -22,6 +24,12 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
   Color gridColor = Colors.black54;
   bool isDesktop(BuildContext context) =>
       MediaQuery.of(context).size.width >= 800;
+
+  // sign user out
+  void signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     // final widthDevice = MediaQuery.of(context).size.width;
@@ -29,6 +37,12 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
     return Scaffold(
       // drawerScrimColor: Colors.white,
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: signOut,
+            icon: const Icon(Icons.logout),
+          )
+        ],
         leading: Builder(builder: (context) {
           return IconButton(
             onPressed: () {

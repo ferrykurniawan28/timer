@@ -26,6 +26,8 @@ class _StreamTimeState extends State<StreamTime> {
   int queue = 0;
   Timer? timer;
 
+  late Timer _periodicTimer;
+
   @override
   void initState() {
     super.initState();
@@ -52,7 +54,7 @@ class _StreamTimeState extends State<StreamTime> {
       }
     });
 
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+    _periodicTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (isTimerRunning) {
         _calculateTimeDifference();
       } else if (!isTimerRunning) {
@@ -126,5 +128,11 @@ class _StreamTimeState extends State<StreamTime> {
         Text('Time left: $count')
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _periodicTimer.cancel();
+    super.dispose();
   }
 }
