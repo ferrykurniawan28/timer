@@ -1,6 +1,7 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timer/mainscreen.dart';
 
@@ -43,22 +44,27 @@ class _LoginScreenState extends State<LoginScreen> {
           email: _email.text,
           password: _password.text,
         );
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => MainScreenMobile(
-              role: roles[_email.text].toString(),
-            ),
-          ),
-        );
+        Get.snackbar('Login', 'Success');
+        Get.to(MainScreenMobile(
+          role: roles[_email.text].toString(),
+        ));
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     builder: (context) => MainScreenMobile(
+        //       role: roles[_email.text].toString(),
+        //     ),
+        //   ),
+        // );
         // return credential.user;
       } on FirebaseAuthException catch (error) {
-        if (error.code == 'user-not-found') {}
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(error.message ?? 'Error: ${error.code}'),
-          ),
-        );
+        // if (error.code == 'user-not-found') {}
+        Get.snackbar('Error', error.toString());
+        // ScaffoldMessenger.of(context).clearSnackBars();
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Text(error.message ?? 'Error: ${error.code}'),
+        //   ),
+        // );
       }
       setState(() {
         isAuthenticating = false;
@@ -116,7 +122,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           decoration: const InputDecoration(
                             labelText: 'Email',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30))),
                           ),
                         ),
                         TextFormField(
@@ -130,7 +139,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           decoration: const InputDecoration(
                             labelText: 'Password',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30))),
                           ),
                         ),
                         if (isAuthenticating) const CircularProgressIndicator(),

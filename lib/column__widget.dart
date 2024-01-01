@@ -8,12 +8,12 @@ import 'package:timer/streamtime.dart';
 class Column_Widget extends StatelessWidget {
   const Column_Widget(
       {super.key,
-      required this.controllerSpeech,
+      required this.controllerExpand,
       required this.gridColor,
       required this.field,
       required this.isDesktop});
 
-  final ExpansionTileController controllerSpeech;
+  final ExpansionTileController controllerExpand;
   final Color gridColor;
   final String field;
   final bool isDesktop;
@@ -33,17 +33,21 @@ class Column_Widget extends StatelessWidget {
           Scaffold.of(context).openDrawer();
 
           Future.delayed(const Duration(milliseconds: 100), () {
-            if (controllerSpeech.isExpanded) {
-              controllerSpeech.collapse();
+            if (controllerExpand.isExpanded) {
+              controllerExpand.collapse();
             } else {
-              controllerSpeech.expand();
+              controllerExpand.expand();
             }
           });
         },
         borderRadius: BorderRadius.circular(10),
         child: Container(
           decoration: BoxDecoration(
-              color: gridColor, borderRadius: BorderRadius.circular(10)),
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [adjustColorIntensity(gridColor, 150), gridColor]),
+              borderRadius: BorderRadius.circular(10)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -65,9 +69,6 @@ class Column_Widget extends StatelessWidget {
                   ],
                 ),
               ),
-              // const SizedBox(
-              //   height: 10,
-              // ),
               if (field != 'Debate')
                 Expanded(
                   child: StreamTime(
@@ -116,4 +117,12 @@ class Column_Widget extends StatelessWidget {
       );
     });
   }
+}
+
+Color adjustColorIntensity(Color baseColor, int factor) {
+  int red = (baseColor.red * factor / 100).round().clamp(0, 255);
+  int green = (baseColor.green * factor / 100).round().clamp(0, 255);
+  int blue = (baseColor.blue * factor / 100).round().clamp(0, 255);
+
+  return Color.fromARGB(255, red, green, blue);
 }

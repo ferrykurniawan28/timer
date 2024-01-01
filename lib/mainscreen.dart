@@ -320,64 +320,67 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
               ),
               if (widget.role != 'admin') ViewField(field: widget.role),
               if (widget.role == 'admin')
-                StaggeredGrid.count(
-                  crossAxisCount: (isDesktop(context)) ? 4 : 2,
-                  // padding: const EdgeInsets.all(10),
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  children: [
-                    StaggeredGridTile.count(
-                      crossAxisCellCount: 1,
-                      mainAxisCellCount: 1.3,
-                      child: Column_Widget(
-                        controllerSpeech: controllerSpeech,
-                        gridColor: Colors.green[500]!,
-                        field: 'Speech',
-                        isDesktop: isDesktop(context),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: StaggeredGrid.count(
+                    crossAxisCount: (isDesktop(context)) ? 4 : 2,
+                    // padding: const EdgeInsets.all(10),
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    children: [
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1.4,
+                        child: Column_Widget(
+                          controllerExpand: controllerSpeech,
+                          gridColor: Colors.green[500]!,
+                          field: 'Speech',
+                          isDesktop: isDesktop(context),
+                        ),
                       ),
-                    ),
-                    // (widget.role == 'speech')
-                    StaggeredGridTile.count(
-                      crossAxisCellCount: 1,
-                      mainAxisCellCount: 1.3,
-                      child: Column_Widget(
-                        controllerSpeech: controllerStortel,
-                        gridColor: Colors.blue[700]!,
-                        field: 'Storytelling',
-                        isDesktop: isDesktop(context),
+                      // (widget.role == 'speech')
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1.4,
+                        child: Column_Widget(
+                          controllerExpand: controllerStortel,
+                          gridColor: Colors.blue[700]!,
+                          field: 'Storytelling',
+                          isDesktop: isDesktop(context),
+                        ),
                       ),
-                    ),
-                    StaggeredGridTile.count(
-                      mainAxisCellCount: 1.3,
-                      crossAxisCellCount: 1,
-                      child: Column_Widget(
-                        controllerSpeech: controllerNewscast,
-                        gridColor: Colors.purple[400]!,
-                        field: 'Newscasting',
-                        isDesktop: isDesktop(context),
+                      StaggeredGridTile.count(
+                        mainAxisCellCount: 1.4,
+                        crossAxisCellCount: 1,
+                        child: Column_Widget(
+                          controllerExpand: controllerNewscast,
+                          gridColor: Colors.purple[400]!,
+                          field: 'Newscasting',
+                          isDesktop: isDesktop(context),
+                        ),
                       ),
-                    ),
-                    StaggeredGridTile.count(
-                      crossAxisCellCount: 1,
-                      mainAxisCellCount: 1.3,
-                      child: Column_Widget(
-                        controllerSpeech: controllerSpellbee,
-                        gridColor: Colors.pink[400]!,
-                        field: 'Spelling Bee',
-                        isDesktop: isDesktop(context),
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1.4,
+                        child: Column_Widget(
+                          controllerExpand: controllerSpellbee,
+                          gridColor: Colors.pink[400]!,
+                          field: 'Spelling Bee',
+                          isDesktop: isDesktop(context),
+                        ),
                       ),
-                    ),
-                    StaggeredGridTile.count(
-                      crossAxisCellCount: 2,
-                      mainAxisCellCount: 0.7,
-                      child: Column_Widget(
-                        controllerSpeech: controllerDebate,
-                        gridColor: Colors.teal[600]!,
-                        field: 'Debate',
-                        isDesktop: isDesktop(context),
-                      ),
-                    )
-                  ],
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 2,
+                        mainAxisCellCount: 0.7,
+                        child: Column_Widget(
+                          controllerExpand: controllerDebate,
+                          gridColor: Colors.teal[600]!,
+                          field: 'Debate',
+                          isDesktop: isDesktop(context),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
             ],
           ),
