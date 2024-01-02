@@ -1,21 +1,38 @@
-import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   var buttonDisabled = false;
 
-  void signIn() async {
+  @override
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      Navigator.pushNamed(context, '/');
+    }
+  }
+
+  void register() async {
+    if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
+      SnackBar snackBar = const SnackBar(
+        content: Text('Please fill in all fields'),
+        duration: Duration(seconds: 2),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+
     // show loading circle
     showDialog(
       context: context,
@@ -30,18 +47,33 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      // sign in with email and password
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      // create user with email and password
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _usernameController.text, password: _passwordController.text);
+
+      // show success message
+      SnackBar snackBar = const SnackBar(
+        content: Text('Account created successfully'),
+        duration: Duration(seconds: 2),
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+
+      // navigate to home page
+      if (mounted) {
+        Navigator.pushNamed(context, '/');
+      }
     } on FirebaseAuthException catch (e) {
       String errMsg = '';
 
       if (e.code == 'invalid-email') {
         errMsg = 'Please enter a valid email address';
-      } else if (e.code == 'missing-password') {
-        errMsg = 'Please enter your password';
-      } else if (e.code == 'invalid-credential') {
-        errMsg = 'Invalid credentials';
+      } else if (e.code == 'weak-password') {
+        errMsg = 'Please enter a stronger password';
+      } else if (e.code == 'email-already-in-use') {
+        errMsg = 'Email already in use';
       } else {
         errMsg = 'Something went wrong';
       }
@@ -57,8 +89,8 @@ class _LoginPageState extends State<LoginPage> {
     } finally {
       // hide loading circle
       if (mounted && Navigator.of(context).canPop()) {
-        // the if condition  avoids popping the login page itself when spammed.
-        Navigator.pop(context);
+        // the if condition avoids popping the login page itself when spammed.
+        Navigator.of(context).pop();
       }
 
       // enable button
@@ -80,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
               const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(
-                  'Sign In',
+                  'Register',
                   style: TextStyle(fontSize: 30),
                 ),
               ),
@@ -113,9 +145,9 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, '/register');
+                        Navigator.pushNamed(context, '/');
                       },
-                      child: const Text("Don't have an account?"),
+                      child: const Text("Sign in"),
                     ),
                   ],
                 ),
@@ -123,8 +155,8 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  onPressed: !buttonDisabled ? signIn : null,
-                  child: const Text('Login'),
+                  onPressed: register,
+                  child: const Text('Register'),
                 ),
               ),
             ],

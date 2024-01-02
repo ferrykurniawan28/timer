@@ -30,10 +30,11 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
     FirebaseAuth.instance.signOut();
   }
 
+  final user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     // final widthDevice = MediaQuery.of(context).size.width;
-
     return Scaffold(
       // drawerScrimColor: Colors.white,
       appBar: AppBar(
@@ -231,6 +232,10 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Text(
+              'Welcome, ${user?.email}',
+              style: GoogleFonts.lato(fontSize: 15),
+            ),
             SizedBox(
               height: (isDesktop(context)) ? 150 : 100,
               child: Jam(

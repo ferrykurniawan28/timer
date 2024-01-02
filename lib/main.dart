@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:timer/timer.dart';
 import 'firebase_options.dart';
 import 'auth.dart';
+import 'registerpage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,6 +85,7 @@ class MainApp extends StatelessWidget {
               field: 'Debate',
               room: 'Perform room',
             ),
+        '/register': (context) => const RegisterPage(),
       },
     );
   }
