@@ -50,13 +50,19 @@ class _TimeState extends State<Time> {
   bool isUserAdmin = false;
   // AudioCache audioCache = AudioCache();
 
+  // check access
+  Future<bool> checkAccess() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && await isAdmin()) {
+      return true;
+    }
+    return false;
+  }
+
   @override
-  void initState() async {
+  void initState() {
     super.initState();
     _isMounted = true;
-
-    // determine if user is admin
-    isUserAdmin = await isAdmin();
 
     if (widget.field == 'Debate') {
       _selectedValue = 7;
@@ -259,11 +265,6 @@ class _TimeState extends State<Time> {
 
   @override
   Widget build(BuildContext context) {
-    // if user is not logged in or not admin go to main screen
-    if (FirebaseAuth.instance.currentUser == null || !isUserAdmin) {
-      Navigator.pushNamed(context, '/');
-    }
-
     String count = isTimerRunning
         ? '${_timeDifference!.inMinutes.remainder(60).toString().padLeft(2, '0')}:${_timeDifference!.inSeconds.remainder(60).toString().padLeft(2, '0')}'
         : '$_selectedValue:00';
@@ -283,118 +284,139 @@ class _TimeState extends State<Time> {
           centerTitle: true,
           // backgroundColor: Colors.blue,
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                child: CircularPercentIndicator(
-                  radius: 70,
-                  // animation: true,
-                  // animateFromLastPercent: false,
-                  progressColor: (progress >= 0.2)
-                      ? const Color.fromARGB(255, 0, 152, 255)
-                      : Colors.red,
-                  lineWidth: 10,
-                  percent: progress,
-                  center: (widget.field != 'Debate')
-                      ? CupertinoButton(
-                          // color: Colors.blue,
-                          child: Text(
-                            count,
-                            style: GoogleFonts.lato(
-                                color: Colors.white, fontSize: 25),
-                          ),
-                          onPressed: () => showCupertinoModalPopup(
-                            context: context,
-                            builder: (_) => SizedBox(
-                              height: 250,
-                              child: CupertinoPicker(
-                                scrollController: FixedExtentScrollController(
-                                  initialItem: 0,
+        body: FutureBuilder(
+          future: checkAccess(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              } else if (snapshot.data == true) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: CircularPercentIndicator(
+                          radius: 70,
+                          // animation: true,
+                          // animateFromLastPercent: false,
+                          progressColor: (progress >= 0.2)
+                              ? const Color.fromARGB(255, 0, 152, 255)
+                              : Colors.red,
+                          lineWidth: 10,
+                          percent: progress,
+                          center: (widget.field != 'Debate')
+                              ? CupertinoButton(
+                                  // color: Colors.blue,
+                                  child: Text(
+                                    count,
+                                    style: GoogleFonts.lato(
+                                        color: Colors.white, fontSize: 25),
+                                  ),
+                                  onPressed: () => showCupertinoModalPopup(
+                                    context: context,
+                                    builder: (_) => SizedBox(
+                                      height: 250,
+                                      child: CupertinoPicker(
+                                        scrollController:
+                                            FixedExtentScrollController(
+                                          initialItem: 0,
+                                        ),
+                                        itemExtent: 30,
+                                        onSelectedItemChanged: (int value) {
+                                          final Map<int, int> time = {
+                                            0: 0,
+                                            1: 2,
+                                            2: 3,
+                                            3: 5,
+                                            4: 6,
+                                            5: 7,
+                                            6: 8,
+                                            7: 10,
+                                            8: 12,
+                                            9: 15,
+                                            10: 30,
+                                          };
+                                          setState(() {
+                                            _selectedValue = time[value]!;
+                                          });
+                                        },
+                                        children: const [
+                                          Text('00:00'),
+                                          Text('02:00'),
+                                          Text('03:00'),
+                                          Text('05:00'),
+                                          Text('06:00'),
+                                          Text('07:00'),
+                                          Text('08:00'),
+                                          Text('10:00'),
+                                          Text('12:00'),
+                                          Text('15:00'),
+                                          Text('30:00'),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  count,
+                                  style: GoogleFonts.lato(
+                                      color: Colors.white, fontSize: 25),
                                 ),
-                                itemExtent: 30,
-                                onSelectedItemChanged: (int value) {
-                                  final Map<int, int> time = {
-                                    0: 0,
-                                    1: 2,
-                                    2: 3,
-                                    3: 5,
-                                    4: 6,
-                                    5: 7,
-                                    6: 8,
-                                    7: 10,
-                                    8: 12,
-                                    9: 15,
-                                    10: 30,
-                                  };
-                                  setState(() {
-                                    _selectedValue = time[value]!;
-                                  });
-                                },
-                                children: const [
-                                  Text('00:00'),
-                                  Text('02:00'),
-                                  Text('03:00'),
-                                  Text('05:00'),
-                                  Text('06:00'),
-                                  Text('07:00'),
-                                  Text('08:00'),
-                                  Text('10:00'),
-                                  Text('12:00'),
-                                  Text('15:00'),
-                                  Text('30:00'),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      : Text(
-                          count,
-                          style: GoogleFonts.lato(
-                              color: Colors.white, fontSize: 25),
                         ),
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              // Text(_timeDifference.toString()),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    onPressed: _startTimer,
-                    icon: const Icon(Icons.timer_outlined),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      // Text(_timeDifference.toString()),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            onPressed: _startTimer,
+                            icon: const Icon(Icons.timer_outlined),
+                          ),
+                          // CupertinoButton.filled(
+                          //   child: Text('Minutes: $_selectedValue'),
+                          //   onPressed: () => showCupertinoModalPopup(
+                          //     context: context,
+                          //     builder: (_) => SizedBox(
+                          //       height: 250,
+                          //       child: CupertinoPicker(
+                          //         scrollController: FixedExtentScrollController(),
+                          //         itemExtent: 30,
+                          //         onSelectedItemChanged: (int value) {},
+                          //         children: [],
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          IconButton(
+                            onPressed: _stopTimer,
+                            icon: const Icon(Icons.timer_off_outlined),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      QueNumber(field: widget.field, room: widget.room),
+                    ],
                   ),
-                  // CupertinoButton.filled(
-                  //   child: Text('Minutes: $_selectedValue'),
-                  //   onPressed: () => showCupertinoModalPopup(
-                  //     context: context,
-                  //     builder: (_) => SizedBox(
-                  //       height: 250,
-                  //       child: CupertinoPicker(
-                  //         scrollController: FixedExtentScrollController(),
-                  //         itemExtent: 30,
-                  //         onSelectedItemChanged: (int value) {},
-                  //         children: [],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  IconButton(
-                    onPressed: _stopTimer,
-                    icon: const Icon(Icons.timer_off_outlined),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              QueNumber(field: widget.field, room: widget.room),
-            ],
-          ),
+                );
+              } else {
+                return const Center(
+                  child: Text('You do not have access to this page'),
+                );
+              }
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
         ),
       ),
     );

@@ -26,8 +26,8 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
       MediaQuery.of(context).size.width >= 800;
 
   // sign user out
-  void signOut() async {
-    await FirebaseAuth.instance.signOut();
+  void signOut() {
+    FirebaseAuth.instance.signOut();
   }
 
   @override
@@ -49,7 +49,6 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
                 signOut();
-                Navigator.pushNamed(context, '/');
               } else if (snapshot.data == true) {
                 return IconButton(
                   onPressed: () {
