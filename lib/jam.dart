@@ -16,10 +16,12 @@ class Jam extends StatefulWidget {
 class _JamState extends State<Jam> {
   DateTime now = DateTime.now();
 
+  late Timer _periodicTimer;
+
   @override
   void initState() {
     super.initState();
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+    _periodicTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _updateTime();
     });
   }
@@ -52,5 +54,11 @@ class _JamState extends State<Jam> {
         )
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _periodicTimer.cancel();
+    super.dispose();
   }
 }

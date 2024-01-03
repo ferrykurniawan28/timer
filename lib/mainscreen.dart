@@ -6,7 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:timer/jam.dart';
 import 'package:timer/streamtime.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/widgets.dart';
+import 'is_admin.dart';
 
 DatabaseReference ref = FirebaseDatabase.instance.ref();
 // final db = FirebaseFirestore.instance;
@@ -22,22 +24,48 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
   Color gridColor = Colors.black54;
   bool isDesktop(BuildContext context) =>
       MediaQuery.of(context).size.width >= 800;
+
+  // sign user out
+  void signOut() {
+    FirebaseAuth.instance.signOut();
+  }
+
+  final user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     // final widthDevice = MediaQuery.of(context).size.width;
-
     return Scaffold(
       // drawerScrimColor: Colors.white,
       appBar: AppBar(
-        leading: Builder(builder: (context) {
-          return IconButton(
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-            color: Colors.white,
-            icon: const Icon(Icons.menu),
-          );
-        }),
+        actions: [
+          IconButton(
+            onPressed: signOut,
+            icon: const Icon(Icons.logout),
+          )
+        ],
+        leading: FutureBuilder(
+          future: isAdmin(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                signOut();
+              } else if (snapshot.data == true) {
+                return IconButton(
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  color: Colors.white,
+                  icon: const Icon(Icons.menu),
+                );
+              } else {
+                return Container();
+              }
+            }
+
+            return Container();
+          },
+        ),
         title: Text(
           'Homepage',
           style: GoogleFonts.lato(color: Colors.white),
@@ -204,6 +232,10 @@ class _MainScreenMobileState extends State<MainScreenMobile> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Text(
+              'Welcome, ${user?.email}',
+              style: GoogleFonts.lato(fontSize: 15),
+            ),
             SizedBox(
               height: (isDesktop(context)) ? 150 : 100,
               child: Jam(
