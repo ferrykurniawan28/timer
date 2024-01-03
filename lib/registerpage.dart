@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/scheduler.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -19,7 +20,17 @@ class _RegisterPageState extends State<RegisterPage> {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      Navigator.pushNamed(context, '/');
+      FirebaseAuth.instance.signOut();
+
+      SnackBar snackbar = const SnackBar(
+        content: Text('You have been logged out'),
+        duration: Duration(seconds: 2),
+      );
+
+      // https://stackoverflow.com/questions/55618717/error-thrown-on-navigator-pop-until-debuglocked-is-not-true
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      });
     }
   }
 
@@ -46,6 +57,7 @@ class _RegisterPageState extends State<RegisterPage> {
       buttonDisabled = true;
     });
 
+    bool success = false;
     try {
       // create user with email and password
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -61,10 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
 
-      // navigate to home page
-      if (mounted) {
-        Navigator.pushNamed(context, '/');
-      }
+      success = true;
     } on FirebaseAuthException catch (e) {
       String errMsg = '';
 
@@ -89,10 +98,13 @@ class _RegisterPageState extends State<RegisterPage> {
     } finally {
       // hide loading circle
       if (mounted && Navigator.of(context).canPop()) {
-        // the if condition avoids popping the login page itself when spammed.
+        // the if condition avoids popping the register page itself when spammed.
         Navigator.of(context).pop();
       }
 
+      if (success && mounted) {
+        Navigator.pushNamed(context, '/');
+      }
       // enable button
       setState(() {
         buttonDisabled = false;
