@@ -27,7 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
         duration: Duration(seconds: 2),
       );
 
-      // https: //stackoverflow.com/questions/55618717/error-thrown-on-navigator-pop-until-debuglocked-is-not-true
+      // https://stackoverflow.com/questions/55618717/error-thrown-on-navigator-pop-until-debuglocked-is-not-true
       SchedulerBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
       });
