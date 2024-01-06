@@ -44,27 +44,25 @@ class _LoginScreenState extends State<LoginScreen> {
           email: _email.text,
           password: _password.text,
         );
-        Get.snackbar('Login', 'Success');
-        Get.to(MainScreenMobile(
-          role: roles[_email.text].toString(),
-        ));
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (context) => MainScreenMobile(
-        //       role: roles[_email.text].toString(),
-        //     ),
-        //   ),
-        // );
+        // Get.snackbar('Login', 'Success');
+        // Get.to(MainScreenMobile(
+        //   role: roles[_email.text].toString(),
+        // ));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => MainScreenMobile(
+              role: roles[_email.text].toString(),
+            ),
+          ),
+        );
         // return credential.user;
       } on FirebaseAuthException catch (error) {
-        // if (error.code == 'user-not-found') {}
-        Get.snackbar('Error', error.toString());
-        // ScaffoldMessenger.of(context).clearSnackBars();
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text(error.message ?? 'Error: ${error.code}'),
-        //   ),
-        // );
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.message ?? 'Error: ${error.code}'),
+          ),
+        );
       }
       setState(() {
         isAuthenticating = false;
