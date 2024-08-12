@@ -9,10 +9,12 @@ class StreamTime extends StatefulWidget {
       {required this.title,
       required this.room,
       required this.field,
+      this.fontsize = 12,
       super.key});
   final String title;
   final String room;
   final String field;
+  final double fontsize;
 
   @override
   State<StreamTime> createState() => _StreamTimeState();
@@ -56,10 +58,7 @@ class _StreamTimeState extends State<StreamTime> {
       if (isTimerRunning) {
         _calculateTimeDifference();
       } else if (!isTimerRunning) {
-        setState(() {
-          _futureDateTime = DateTime.now();
-          // _timeDifference = Duration.zero;
-        });
+        _stopTimer();
       }
     });
   }
@@ -69,16 +68,6 @@ class _StreamTimeState extends State<StreamTime> {
     isTimerRunning = false;
     _futureDateTime = DateTime.now();
     _timeDifference = _futureDateTime.difference(DateTime.now());
-    // try {
-    //   await _dataRef.child(widget.field).child(widget.room).update({
-    //     'timestamp': _futureDateTime.millisecondsSinceEpoch,
-    //     'isRunning': false
-    //   });
-    // } catch (error) {
-    //   // print(error);
-    // } finally {
-    //   // print('Done writing to database');
-    // }
     setState(() {});
   }
 
@@ -95,19 +84,6 @@ class _StreamTimeState extends State<StreamTime> {
       }
     }
 
-    // if (!isTimerRunning) {
-    //   setState(() {
-    //     _timeDifference = null;
-    //   });
-    // }
-    // If the future date is in the past, stop the timer
-    // if (_timeDifference! <= Duration.zero) {
-    //   // timer?.cancel();
-    //   _timeDifference = Duration.zero;
-    //   // _stopTimer();
-    //   isTimerRunning = false;
-    // }
-
     setState(() {});
   }
 
@@ -117,13 +93,26 @@ class _StreamTimeState extends State<StreamTime> {
         ? '${_timeDifference!.inMinutes.remainder(60).toString().padLeft(2, '0')}:${_timeDifference!.inSeconds.remainder(60).toString().padLeft(2, '0')}'
         : '00:00';
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Text(
           widget.title,
-          style: GoogleFonts.lato(),
+          style: GoogleFonts.lato(
+            fontSize: widget.fontsize,
+          ),
         ),
-        Text('Queue: ${queue.toString()}'),
-        Text('Time left: $count')
+        Text(
+          'Queue: ${queue.toString()}',
+          style: GoogleFonts.lato(
+            fontSize: widget.fontsize,
+          ),
+        ),
+        Text(
+          'Time left: $count',
+          style: GoogleFonts.lato(
+            fontSize: widget.fontsize,
+          ),
+        )
       ],
     );
   }

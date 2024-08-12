@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:timer/login.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:timer/mainscreen.dart';
+import 'package:timer/splashscreen.dart';
 // import 'package:timer/mainscreen.dart';
 import 'package:timer/timer.dart';
 import 'firebase_options.dart';
@@ -21,13 +24,38 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // roles.dart
+    Map<String, String> roles = {
+      'aeo.director@aeo.com': 'admin',
+      'aeo.speech@aeo.com': 'speech',
+      'aeo.storytelling@aeo.com': 'stortel',
+      'aeo.newscasting@aeo.com': 'newscast',
+      'aeo.spellingbee@aeo.com': 'spellbe',
+      'aeo.debate@aeo.com': 'debate'
+    };
+
     return MaterialApp(
       title: 'Timer AEO 2024',
       theme: ThemeData.dark(),
-      // home: const MainScreenMobile(),
-      initialRoute: '/',
+      home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const SplashScreen();
+            }
+            if (snapshot.hasData) {
+              User? user = snapshot.data as User?;
+              String userEmail = user?.email ?? '';
+              String userRole = roles[userEmail] ?? ''; // Get role from the map
+
+              return MainScreenMobile(role: userRole);
+            } else {
+              return const LoginScreen();
+            }
+          }),
+      // initialRoute: '/',
       routes: {
-        '/': (context) => const MainScreenMobile(),
+        '/login': (context) => const LoginScreen(),
         '/speech_prep_1': (context) => const Time(
               title: 'Prep room 1',
               field: 'Speech',
@@ -73,6 +101,16 @@ class MainApp extends StatelessWidget {
               field: 'Newscasting',
               room: 'Perform room',
             ),
+        '/spelling_bee_prep_1': (context) => const Time(
+              title: 'Prep room 1',
+              field: 'Spelling Bee',
+              room: 'Prep room1',
+            ),
+        '/spelling_bee_prep_2': (context) => const Time(
+              title: 'Prep room 2',
+              field: 'Spelling Bee',
+              room: 'Prep room2',
+            ),
         '/spelling_bee_perform': (context) => const Time(
               title: 'Perform room',
               field: 'Spelling Bee',
@@ -84,6 +122,7 @@ class MainApp extends StatelessWidget {
               room: 'Perform room',
             ),
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }
